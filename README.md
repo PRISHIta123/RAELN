@@ -6,3 +6,5 @@ Links to research papers for dynamic analysis:
 3. https://www.hindawi.com/journals/mpe/2019/8195395/
 4. https://arxiv.org/pdf/1904.02441.pdf
 
+Link to main dataset (cannot include here due to large size): https://github.com/ocatak/malware_api_class/blob/master/mal-api-2019.zip
+
