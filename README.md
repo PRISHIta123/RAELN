@@ -8,3 +8,5 @@ Links to research papers for dynamic analysis:
 
 Link to main dataset (cannot include here due to large size): https://github.com/ocatak/malware_api_class/blob/master/mal-api-2019.zip
 
+Instructions for citing dataset: https://ieee-dataport.org/open-access/malware-api-call-dataset
+
