@@ -1,9 +1,13 @@
-Multi-class classification
+Multi-class classification of malware log files
 
-1. Log files, type of malware should be obtained through sand box and create dataset
-2. Feature extraction of log files through RNN+LSTM and PCA
-3. Enhancing features and conversion to type accepted by classifier
-4. Classification for type of malware: CNN and one of (OPF, Logistic Regression, Adaboost, K-nearest neighbours)
-5. Training the each model(4) using the data
-6. Validate with labelled files and search for techniques (F1 score, K-fold cross validation) to handle true positives, fn, etc
-7. Get the accuracy, plot graphs and analyze which model is best suited
+1. Log files, type of malware should be obtained through sand box 
+2. Create a csv file to contain paths to the log files
+3. Divide log files into training, validation and testing data
+4. Feature extraction of training log files through RNN+LSTM and PCA
+5. One-hot encoding the labels
+6. Enhancing features and conversion to type accepted by classifier
+7. Classification for type of malware: CNN and one of (OPF, Logistic Regression, Adaboost, K-nearest neighbours)
+8. Training each model(4 combinations) using the data
+9. Test the model's performance on testing dataset
+10. Validate with labelled files and search for techniques (F1 score, K-fold cross validation) to handle true positives, fn, etc
+11. Get the accuracy, plot graphs and analyze which model is best suited
