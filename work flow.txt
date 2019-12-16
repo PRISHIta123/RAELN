@@ -1,6 +1,6 @@
 Multi-class classification of malware log files
 
-1. Log files, type of malware should be obtained through sand box 
+1. Log files should be obtained through sand box 
   VBS.NoMercy.B (virus binary files)
   Trojan.NSIS.Win32 (trojan binary files)
   Net-Worm.Win32.Kido (worm binary files)
