@@ -12,7 +12,7 @@ Multi-class classification of malware log files
 2. Create a csv file to contain paths to the log files and labels
 3. One-hot encoding the labels
 4. Divide files into training, validation and testing data
-5. Feature extraction of training log files through GRU and PCA
+5. Feature extraction of training log files through GRU-Auto Encoder and PCA
 6. Enhancing features and conversion to type accepted by classifier
 7. Classification for type of malware: CNN and one of (OPF, Logistic Regression, Adaboost, K-nearest neighbours)
 8. Training each model(4 combinations) using the data
