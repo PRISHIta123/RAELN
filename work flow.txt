@@ -1,21 +1,12 @@
 Multi-class classification of malware log files
 
-1. Log files should be obtained through sand box 
-  VBS.NoMercy.B (virus binary files)
-  Trojan.NSIS.Win32 (trojan binary files)
-  Net-Worm.Win32.Kido (worm binary files)
-  Android.Spy.49_iBanking_Feb2014 (spyware binary files)
-  Ransomware.Satana (ransomware binary files)
-  
-  https://github.com/ytisf/theZoo/tree/master/malwares/Binaries - link to zip files of above
-  
-2. Create a csv file to contain paths to the log files and labels
+1. Download training and testing csv files from https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/
+2. Preprocessing the data
 3. One-hot encoding the labels
-4. Divide files into training, validation and testing data
-5. Feature extraction of training log files through GRU-Auto Encoder and PCA
-6. Enhancing features and conversion to type accepted by classifier
-7. Classification for type of malware: CNN and one of (OPF, Logistic Regression, Adaboost, K-nearest neighbours)
-8. Training each model(4 combinations) using the data
-9. Test the model's performance on testing dataset
-10. Validate with labelled files and search for techniques (F1 score, K-fold cross validation) to handle true positives, fn, etc
-11. Get the accuracy, plot graphs and analyze which model is best suited
+4. Feature selection of training data through GRU-Auto Encoder and PCA
+5. Enhancing features and conversion to type accepted by classifier
+6. Classification for type of malware: Deep Belief Networks and DBSCAN algorithms
+7. Training each model(4 combinations) using the data
+8. Test the model's performance on testing dataset
+9. Validate with labeled files and search for techniques (F1 score, K-fold cross validation) to handle true positives, fn, etc
+10. Get the accuracy, plot graphs and analyze which model is best suited
