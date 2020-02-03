@@ -1,0 +1,66 @@
+1. Autoencoder
+
+Best features:
+synack
+djit
+dloss
+stcpb
+sloss
+dwin
+ct_src_dport_ltm
+ct_dst_ltm
+spkts
+sttl
+
+Variance=  0.39073144007366756
+Loss= 0.0386
+
+2. L1
+
+Best features:
+service
+sbytes
+ct_state_ttl
+sjit
+sload
+sloss
+ct_src_ltm
+spkts
+synack
+
+Variance= 0.30921330641826505
+Loss= 0.568
+
+3. L2
+
+Best features:
+sjit
+dload
+dwin
+id
+ct_srv_dst
+spkts
+rate
+is_sm_ips_ports
+stcpb
+sbytes
+
+Variance= 0.269915155409853
+Loss= 0.0785
+
+4. Dropout
+
+Best features:
+synack
+is_ftp_login
+dur
+swin
+sload
+ct_src_dport_ltm
+sinpkt
+ct_dst_ltm
+ct_dst_src_ltm
+stcpb
+
+Variance= 0.46059304023920117 
+Loss=0.1455
