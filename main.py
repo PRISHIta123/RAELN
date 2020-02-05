@@ -49,6 +49,18 @@ bf4=ae_dropout.Autoencoder_Dropout(training_features, lr, actf, num_inputs, num_
 print(bf4)
 
 sf=bf3
+sf.append('attack_cat')
+#choosing top 10 feature values from datasets to train classifier
+training_df = training_df[sf]
+testing_df = testing_df[sf]
+
+training_data = np.array(training_df)
+testing_data = np.array(testing_df)
+
+training_fl = training_data[0:10000,0:10]
+training_l = training_data[0:10000,10]
+training_ful = training_data[10000:,0:10]
+testing_f=testing_data[:,0:10]
 
 
 
