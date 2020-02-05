@@ -47,3 +47,8 @@ bf3=ae_l2.Autoencoder_L2(training_features, lr, actf, num_inputs, num_hid, num_o
 print(bf3)
 bf4=ae_dropout.Autoencoder_Dropout(training_features, lr, actf, num_inputs, num_hid, num_output, training_df).training()
 print(bf4)
+
+sf=bf3
+
+
+
