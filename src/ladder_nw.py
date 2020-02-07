@@ -8,10 +8,12 @@ from tensorflow.contrib.layers import fully_connected
 
 class Ladder:
 
-    def __init__(self, training_data, labels, lr, actf1, actf2, layer_sizes, num_labeled, num_samples, batch_size):
+    def __init__(self, training_data, labels, testing_data, t_labels, lr, actf1, actf2, layer_sizes, num_labeled, num_samples, batch_size):
 
         self.training_data= training_data
         self.labels = labels
+        self.testing_data= testing_data
+        self.t_labels = t_labels
         self.lr = lr
         self.actf1 = actf1
         self.actf2 = actf2
@@ -174,7 +176,7 @@ class Ladder:
                 x_vals.append(epoch)
                 y_vals.append(train_loss)
 
-            print ("Final Accuracy: ", sess.run(accuracy, feed_dict={X:self.training_data, Y:self.labels, training: False}), "%")
+            print ("Final Accuracy: ", sess.run(accuracy, feed_dict={X:self.testing_data, Y:self.t_labels, training: False}), "%")
 
         plt.rcParams['figure.figsize']=(20,20)
         plt.plot(x_vals,y_vals)

@@ -62,6 +62,8 @@ testing_data = np.array(testing_df)
 
 data = training_data[:,0:10]
 labels = training_data[0:10000,10]
+test_data= testing_data[:,0:10]
+test_labels= testing_data[:,10]
 
 learning_rate=0.01
 actf1=tf.nn.relu
@@ -72,6 +74,6 @@ num_samples=len(data)
 batch_size=10000
 
 
-ladder.Ladder(data,labels,learning_rate,actf1,actf2,layer_sizes,num_labeled,num_samples,batch_size).training()
+ladder.Ladder(data,labels,test_data,test_labels,learning_rate,actf1,actf2,layer_sizes,num_labeled,num_samples,batch_size).training()
 
 
