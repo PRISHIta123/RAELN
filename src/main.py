@@ -14,8 +14,8 @@ import autoencoder_dropout as ae_dropout
 import ladder_nw as ladder
 
 
-training_df=pd.read_csv("F://ML Paper Project//UNSW_NB15_training-set.csv")
-testing_df=pd.read_csv("F://ML Paper Project//UNSW_NB15_testing-set.csv")
+training_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_NB15_training-set.csv")
+testing_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_NB15_testing-set.csv")
 
 training_df= prep.integer_encode(training_df)
 testing_df= prep.integer_encode(testing_df)
