@@ -17,6 +17,9 @@ import ladder_nw as ladder
 training_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_NB15_training-set.csv")
 testing_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_NB15_testing-set.csv")
 
+training_df= training_df.dropna()
+testing_df= testing_df.dropna()
+
 training_df= prep.integer_encode(training_df)
 testing_df= prep.integer_encode(testing_df)
 
@@ -61,15 +64,18 @@ training_data = np.array(training_df)
 testing_data = np.array(testing_df)
 
 data = training_data[:,0:10]
-labels = training_data[0:10000,10]
+labels = training_data[:,10]
 test_data= testing_data[:,0:10]
 test_labels= testing_data[:,10]
 
-learning_rate=0.01
-actf1=tf.nn.relu
+data= prep.normalize_dataset(data)
+test_data= prep.normalize_dataset(test_data)
+
+learning_rate=0.0001
+actf1=tf.nn.elu
 actf2=tf.nn.softmax
-layer_sizes=[10, 25, 8, 4, 4, 4, 2]
-num_labeled=10000
+layer_sizes=[10, 12, 8, 4, 1]
+num_labeled=30000
 num_samples=len(data)
 batch_size=10000
 
