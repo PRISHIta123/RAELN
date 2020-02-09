@@ -217,7 +217,7 @@ class Ladder:
             for epoch in range(num_epoch):
                 
                 #learning rate decay
-                self.lr = self.lr * (0.9 **(epoch//25))
+                self.lr = self.lr * (0.95 **(epoch//25))
                 for iteration in range(self.num_batches):
                     X_batch, Y_batch =self.next_batch(self.batch_size,self.training_data,self.labels)
                     sess.run(train,feed_dict={X:X_batch, Y:Y_batch, training: True})

@@ -14,8 +14,8 @@ import autoencoder_dropout as ae_dropout
 import ladder_nw as ladder
 
 
-training_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_NB15_training-set.csv")
-testing_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_NB15_testing-set.csv")
+training_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_datasets//UNSW_NB15_training-set.csv")
+testing_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_datasets//UNSW_NB15_testing-set.csv")
 
 training_df= training_df.dropna()
 testing_df= testing_df.dropna()
@@ -71,7 +71,7 @@ test_labels= testing_data[:,10]
 data= prep.normalize_dataset(data)
 test_data= prep.normalize_dataset(test_data)
 
-learning_rate=0.0001
+learning_rate=0.0005
 actf1=tf.nn.elu
 actf2=tf.nn.softmax
 layer_sizes=[10, 12, 8, 4, 1]
