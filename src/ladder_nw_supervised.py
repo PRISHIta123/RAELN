@@ -9,7 +9,7 @@ from tensorflow.contrib.layers import fully_connected
 
 class Ladder:
 
-    def __init__(self, training_data, labels, testing_data, t_labels, lr, actf1, actf2, layer_sizes, num_labeled, num_samples, batch_size):
+    def __init__(self, training_data, labels, testing_data, t_labels, lr, actf1, actf2, layer_sizes, num_samples, batch_size):
 
         self.training_data= training_data
         self.labels = labels
