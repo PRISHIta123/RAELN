@@ -190,11 +190,13 @@ class Ladder:
 
         #total unsupervised cost
         ul_cost= tf.add_n(d_cost)
+        print(type(ul_cost))
 
         p_enc_corr_l=self.labeled(p_enc_corr)
 
         #total supervised cost
         l_cost = -tf.reduce_mean(tf.reduce_sum(Y*(tf.log(p_enc_corr_l+tf.constant(1e-10))), 1))
+        print(type(l_cost))
 
         loss= l_cost + ul_cost
 

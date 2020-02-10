@@ -71,7 +71,7 @@ test_labels= testing_data[:,10]
 data= prep.normalize_dataset(data)
 test_data= prep.normalize_dataset(test_data)
 
-learning_rate=0.0005
+learning_rate=0.001
 actf1=tf.nn.elu
 actf2=tf.nn.softmax
 layer_sizes=[10, 12, 8, 4, 1]
