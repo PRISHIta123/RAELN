@@ -3,7 +3,6 @@ import pandas as pd
 import math
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import LabelEncoder
 
 from tensorflow.contrib.layers import fully_connected
 
@@ -47,6 +46,8 @@ class Ladder:
 
     def denoising(self, u, z_corr, var):
         z_calc=0
+        z_corr=tf.sigmoid(z_corr)
+        u=tf.sigmoid(u)
         z_calc= var*z_corr + (1-var)*u
         return z_calc
 

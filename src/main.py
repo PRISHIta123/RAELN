@@ -11,7 +11,9 @@ import autoencoder as ae
 import autoencoder_l1 as ae_l1
 import autoencoder_l2 as ae_l2
 import autoencoder_dropout as ae_dropout
+import fsfc
 import ladder_nw as ladder
+import ladder_nw_supervised as ladder_sp
 
 
 training_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_datasets//UNSW_NB15_training-set.csv")
