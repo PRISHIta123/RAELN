@@ -1,8 +1,13 @@
 import numpy as np
 import pandas as pd
 import math
+import random
 import tensorflow as tf
 import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix
+from sklearn.externals import joblib
+
 
 class MCSSB:
 
@@ -42,10 +47,11 @@ class MCSSB:
                     cos = dot / (norma * normb)
                     l.append(cos)    
             self.S.append(l)
+            
 
     def set_b(self, pred_y):
 
-        for i in range(num_labeled, num_samples):
+        for i in range(self.num_labeled, self.num_samples):
             den=0
             for x in range(0,self.num_classes):
                 den= den+ exp(pred_y[i][x])
@@ -55,6 +61,7 @@ class MCSSB:
                 b_i.append(exp(pred_y[i][x])//den)
 
             self.b.append(b_i)
+            
 
     def set_tau(self):
 
@@ -75,27 +82,28 @@ class MCSSB:
 
     def set_phi(self):
 
-        for i in range(0, self.num_labeled):
+        for i in range(self.num_labeled, self.num_samples):
             l1=[]
-            for j in range(self.num_labeled, self.num_samples):
+            for j in range(0,self.num_labeled):
                 l=[]
                 for k in range(0,self.num_classes):
-                    con= np.dot(b[i][k],self.ohe_labels[j][k])
+                    con= self.b[i][k]*self.ohe_labels[j][k]
                     sm=0
                     for k1 in range(0,self.num_classes):
-                        sm=sm+ (1//b[i][k1])
+                        sm=sm+ (1//self.b[i][k1])
                     x= con*sm
+                    x= x- (self.ohe_labels[i][k]//self.b[i][k])
                     l.append(x)
                 l1.append(l)
             self.phi.append(l1)
+            
                     
-        
-
     def set_Z_ij_ul(self, i, j):
 
         Z_i_j = np.dot(b[i],b[j])
 
         return Z_i_j
+    
 
     def set_Z_ul(self,pred_y):
         
@@ -147,39 +155,150 @@ class MCSSB:
 
         return fl
 
+
     def obj_func(self, fu, fl):
 
         return fu + 10000*fl
+    
 
     def training(self):
 
         training_data_ul= self.training_data[self.num_labeled:self.num_samples]
+        training_data_l= self.training_data[0:self.num_labeled]
 
-        l=len(training_data_ul)
-        training_data_ul= np.random.shuffle(training_data_ul)
-        s= random.randrange(1,l+1)
-
-        sample_data= training_data_ul[0:s]
-        
-        T= 1000
+        T= 50
         alpha=1
 
         for iter in range(0,T):
+            w=[]
+            #H=y_pred
+            H=[]
+            for i in range(self.num_labeled, self.num_samples):
+                alpha_i=[]
+                beta_i=[]
+                w1=[]
+                for k in range(0,self.num_classes):
+                    alpha_i.append(0)
+                    beta_i.append(0)
+                        
+                    for j in range(self.num_labeled, self.num_samples):
+                        alpha_i[k]= alpha_i[k] +((self.S[i][j]*(self.b[i][k]- self.tau[i][j][k]))//self.Z_u[i][j])
+
+                    for j in range(0,self.num_labeled):
+                        beta_i[k]= beta_i[k] +(self.S[i][j]*self.phi[i][j][k])
+
+                    beta_i[k] = 0.5*beta_i[k]
+                    w1.append(alpha_i[k] + 1000*beta_i[k])
+
+                H.append(w1.index(max(w1)))
+                w.append(max(w1))
+                    
+            s=max(35000,self.num_samples//5)
+
+            H=np.array(H)
+
+            indexes= random.choices(np.arange(self.num_labeled,self.num_samples),w,s)
+            sample_data_ul= [self.training_data[i] for i in indexes]
+            H = [H[i] for i in indexes]
+            sample_data_ul= np.array(sample_data_ul)
+            H= np.array(H)
+
+            acc_training_data= np.vstack((training_data_l, sample_data_ul))
+            acc_labels= np.vstack((self.labels,H))
+
+            classifier = RandomForestClassifier(criterion='entropy')
+            classifier.fit(acc_training_data, acc_labels)
+
+            test_data= training_data_ul
+
+            h=[]
+            for i in range(self.num_labeled, self.num_samples):
+                x = classifier.predict(test_data[i])
+                l=[]
+                for k in range(0,self.num_classes):
+                    if k==x:
+                        l.append(1)
+                    else:
+                        l.append(0)
+                h.append(l)
+
+            A_u=0
+            A_l=0
+            B_u=0
+            B_l=0
+
+            #Calculate A_u
+            for i in range(self.num_labeled,self.num_samples):
+                for j in range(self.num_labeled,self.num_samples):
+                    pre=(self.S[i][j]//self.Z_u[i][j])
+                    sm=0
+                    for k in range(0,self.num_classes):
+                        sm= sm + h[i][k]*self.b[i][k]
+                    prod=pre*sm
+                    A_u= A_u+prod
+
+            #Calculate A_l
+            for i in range(0,self.num_labeled):
+                for j in range(self.num_labeled,self.num_samples):
+                    pre=self.S[i][j]
+                    sm=0
+                    for k in range(0,self.num_classes):
+                        for k1 in range(0,self.num_classes):
+                            sm= sm + ((self.ohe_labels[i][k]*self.b[j][k1]*h[j][k1])//self.b[j][k])
+                    prod=pre*sm
+                    A_l=A_l+prod
+
+            A_l=A_l*0.5
+
+            #Calculate B_u
+            for i in range(self.num_labeled,self.num_samples):
+                for j in range(self.num_labeled,self.num_samples):
+                    pre=(self.S[i][j]//self.Z_u[i][j])
+                    sm=0
+                    for k in range(0,self.num_classes):
+                        sm= sm + h[i][k]*self.tau[i][j][k]
+                    prod=pre*sm
+                    B_u= B_u+prod
+
+            #Calculate B_l
+            for i in range(0,self.num_labeled):
+                for j in range(self.num_labeled,self.num_samples):
+                    pre=self.S[i][j]
+                    sm=0
+                    for k in range(0,self.num_classes):
+                        sm= sm + ((self.ohe_labels[i][k]*self.h[j][k])//self.b[j][k])
+                    prod=pre*sm
+                    B_l=B_l+prod
+
+            B_l=B_l*0.5
+
+            num= B_u + 1000*B_l
+            den= A_u + 1000*A_l
+
+            alpha= 0.25*math.log(num//den)
+
             if alpha<=0:
                 break
             else:
-                for i in range(0,s):
+                for i in range(self.num_labeled, self.num_samples):
                     for k in range(0,self.num_classes):
-                        alpha_i_k= 0
-                        beta_i_k= 0
-                        
-                        for j in range(self.num_labeled, self.num_samples):
-                            alpha_i_k= alpha_i_k +((self.S[i][j]*(self.b[i][k]- self.tau[i][j][k]))//self.Z_u[i][j])
+                        H[i][k]= H[i][k]+ alpha*h[i][k]
 
-                        for j in range(0,self.num_labeled):
-                            beta_i_k= beta_i_k +(self.S[i][j]*self.phi[i][j][k])
+            
+                
 
-                        beta_i_k = 0.5*beta_i_k
+                
+
+                
+                
+
+                
+
+                
+                    
+                    
+
+                    
             
     
     
