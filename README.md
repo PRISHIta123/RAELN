@@ -1,10 +1,12 @@
-# Malware_Detection_using_ML
+# Semi_Supervised_Model_for_Classification_of_Network_Intrusion_Malwares
 
-Link to research paper for dynamic analysis (check A.3 in pdf):
-https://link.springer.com/content/pdf/bbm%3A978-981-13-1444-5%2F1.pdf
+All source code files are available in the src folder
+Associated plots are present in the Plots folder
+The datasets including the benchmark NSL KDD dataset is present in the data folder
 
-Dataset Link: https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/
+UNSW Dataset Link: https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/
+NSL-KDD19 Dataset Link: https://www.kaggle.com/hassan06/nslkdd#__sid=js0
 
-Reference Link: https://github.com/tuff96/Malware-detection-using-Machine-Learning/blob/master/extract.py
+
 
 
