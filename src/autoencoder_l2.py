@@ -96,7 +96,7 @@ class Autoencoder_L2:
                 y.append(train_loss)
                 
         for var, val in zip(vars, vars_vals):
-            if var.get_shape()==(43, 22):
+            if var.get_shape()==(41, 20):
                 l=val
                 
         plt.rcParams['figure.figsize']=(20,20)

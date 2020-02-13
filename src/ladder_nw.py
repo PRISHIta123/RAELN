@@ -8,7 +8,7 @@ from tensorflow.contrib.layers import fully_connected
 
 class Ladder:
 
-    def __init__(self, training_data, labels, testing_data, t_labels, lr, actf1, actf2, layer_sizes, num_labeled, num_samples, batch_size):
+    def __init__(self, training_data, labels, testing_data, t_labels, lr, actf1, actf2, layer_sizes, num_labeled, num_samples, num_classes, batch_size):
 
         self.training_data= training_data
         self.labels = labels
@@ -21,17 +21,44 @@ class Ladder:
         self.L = len(layer_sizes) - 1
         self.num_labeled = num_labeled
         self.num_samples = num_samples
+        self.num_classes = num_classes
         self.batch_size= batch_size
-        self.denoising_cost = [1000.0, 10.0, 0.10, 0.10, 0.10]
+        self.denoising_cost = [100.0, 10.0, 1.0, 0.10]
         self.num_batches = len(training_data)//self.batch_size
-        self.num_l_per_batch = self.num_labeled//self.num_batches
+        self.nlpb =0
+
+    def convert_to_one_hot(self):
+        L=[]
+        for i in range(0,len(self.labels)):
+            l=[]
+            for j in range(0,self.num_classes):
+                if self.labels[i]==j:
+                    l.append(1)
+                else:
+                    l.append(0)
+            L.append(l)
+        L=np.array(L)
+        self.labels=L
+
+        L=[]
+        for i in range(0,len(self.t_labels)):
+            l=[]
+            for j in range(0,self.num_classes):
+                if self.t_labels[i]==j:
+                    l.append(1)
+                else:
+                    l.append(0)
+            L.append(l)
+        L=np.array(L)
+        self.t_labels=L
+
 
     def unlabeled(self, x):
-        ul = tf.slice(x,[1714,0],[-1,-1])
+        ul = tf.slice(x,[self.num_labeled,0],[-1,-1])
         return ul
 
     def labeled(self, x):
-        l = tf.slice(x,[0,0],[1714,-1])
+        l = tf.slice(x,[0,0],[self.num_labeled,-1])
         return l
     
     def batch_norm(self, vals):
@@ -104,48 +131,18 @@ class Ladder:
 
         return u,d_cost
 
-    def next_batch(self, num, data, labels):
-        #num= batch size
-        #num_l_per_batch= number of labels per batch
-        #n_ex_pc= number of labels per class
+    def next_batch(self):
         
-        num_classes= 10
-        n_ex_pc = self.num_l_per_batch//num_classes
-        
-        idy = np.arange(0 , len(labels))
+        idy = np.arange(0, self.num_labeled)
         np.random.shuffle(idy)
-        idy = idy.tolist()
-        y=[]
-        for i in range(num_classes):
-            y.append(0)
+        data_labeled = [self.training_data[i] for i in idy]
+        data_shuffle_y = [self.labels[i] for i in idy]
 
-        indexes=[]
-
-        for i in idy:
-            for j in range(num_classes):
-                if labels[i]==j and y[j]< n_ex_pc:
-                    indexes.append(i)
-                    y[j]=y[j]+1
-                    break
-                
-        indexes= np.array(indexes)
-        data_shuffle_y = [labels[i] for i in indexes]
-
-        data_labeled = [data[i] for i in indexes]
-
-        index_all = np.arange(0, len(data))
-        np.random.shuffle(index_all)
-
-        idx = []
-
-        for i in index_all:
-            if i not in indexes:
-                idx.append(i)
-
-
-        num_unlabeled = num - len(data_shuffle_y)
-        idx = idx[:num_unlabeled]
-        data_unlabeled = [data[i] for i in idx]
+        idx = np.arange(self.num_labeled,self.num_samples)
+        np.random.shuffle(idx)
+        num_ul_per_batch= self.batch_size - len(idy)
+        idx=idx[:num_ul_per_batch]
+        data_unlabeled = [self.training_data[i] for i in idx]
 
         data_shuffle_x= []
         for x in data_labeled:
@@ -160,6 +157,8 @@ class Ladder:
     def training(self):
         X=tf.placeholder(tf.float32,shape=[None,self.layer_sizes[0]])
         Y=tf.placeholder(tf.float32)
+
+        self.convert_to_one_hot()
 
         training = tf.placeholder(tf.bool)
 
@@ -191,28 +190,23 @@ class Ladder:
 
         #total unsupervised cost
         ul_cost= tf.add_n(d_cost)
-        print(type(ul_cost))
 
         p_enc_corr_l=self.labeled(p_enc_corr)
 
         #total supervised cost
         l_cost = -tf.reduce_mean(tf.reduce_sum(Y*(tf.log(p_enc_corr_l+tf.constant(1e-10))), 1))
-        print(type(l_cost))
 
         loss= l_cost + ul_cost
 
         pred_cost = -tf.reduce_mean(tf.reduce_sum(Y*(tf.log(p_enc+tf.constant(1e-10))), 1)) #correct prediction cost
 
-        correct_prediction = tf.equal(tf.argmax(p_enc, 1), tf.argmax(Y, 1))  # no of correct predictions
+        correct_prediction = tf.equal(tf.argmax(p_enc, -1), tf.argmax(Y, -1))  # no of correct predictions
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float")) * tf.constant(100.0)
 
         optimizer=tf.train.AdamOptimizer(self.lr)
         train=optimizer.minimize(loss)
         init=tf.global_variables_initializer()
-        num_epoch=1000
-
-        x_vals=[]
-        y_vals=[]
+        num_epoch=50
 
         with tf.Session() as sess:
             sess.run(init)
@@ -220,22 +214,14 @@ class Ladder:
             for epoch in range(num_epoch):
                 
                 #learning rate decay
-                self.lr = self.lr * (0.95 **(epoch//25))
+                self.lr = self.lr * (0.8 **(epoch//25))
                 for iteration in range(self.num_batches):
-                    X_batch, Y_batch =self.next_batch(self.batch_size,self.training_data,self.labels)
+                    X_batch, Y_batch =self.next_batch()
                     sess.run(train,feed_dict={X:X_batch, Y:Y_batch, training: True})
                 train_loss=loss.eval(feed_dict={X:X_batch, Y:Y_batch, training: True})
                 print("epoch {} loss {}".format(epoch,train_loss))
-                x_vals.append(epoch)
-                y_vals.append(train_loss[0])
 
-            #print ("Final Accuracy: ", sess.run(accuracy, feed_dict={X:self.testing_data, Y:self.t_labels}), "%")
-
-        plt.rcParams['figure.figsize']=(20,20)
-        plt.plot(x_vals,y_vals)
-        plt.xlabel("Epochs")
-        plt.ylabel("Training loss")
-        plt.show()
+            print ("Final Accuracy: ", sess.run(accuracy, feed_dict={X:self.testing_data, Y:self.t_labels, training: False}), "%")
 
         
 

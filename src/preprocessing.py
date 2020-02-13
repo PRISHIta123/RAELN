@@ -25,6 +25,6 @@ def normalize_dataset(features):
         std=np.std(features[:,i])
         
         for j in range(0,num_rows):
-            features[j][i]=(features[j][i]-mean)/std
+            features[j][i]=(features[j][i]-mean)/(std + 1e-10)
 
     return features
