@@ -1,194 +1,243 @@
 from __future__ import division
 from math import log
 import math  
-from random import shuffle 
+from random import shuffle
+import numpy as np
 
-def entropy(pi):
-    total = 0
-    for p in pi:
-        p = p / sum(pi)
-        if p != 0:
-            total += p * log(p, 2)
-        else:
-            total += 0
-    total *= -1
-    return total
+class FSFC:
 
+    def __init__(self, training_features, training_df):
+        self.training_features = training_features
+        self.training_df = training_df
+        self.n= training_features.shape[1]
 
-def gain(d, a):
-    total = 0
-    for v in a:
-        total += sum(v) / sum(d) * entropy(v)
+    def convert_cont_to_discrete(self):
+        for i in range(0,self.n):
+            mean= np.mean(self.training_features[:,i])
+            var= np.var(self.training_features[:,i])
+            bins= np.array([mean-1.5*var, mean-var, mean-0.5*var, mean, mean+0.5*var, mean+var, mean+1.5*var])
+            inds= np.digitize(self.training_features[:,i],bins)
+            self.training_features[:,i]= inds
+                              
+    def entropy(self, i):
+        f = self.training_features[:,i]
 
-    gain = entropy(d) - total
-    return gain
+        unique,counts= np.unique(f, return_counts=True)
+        l=len(f)
 
-def SU(X,Y):
-    su = 2*gain(X,Y)/(entropy(X)+entropy(Y))
-    return su
+        d= dict(zip(unique,counts))
 
-def CalculateNeighborsClass(neighbors, k): 
-    count = {} 
-  
-    for i in range(k): 
-        if neighbors[i][1] not in count: 
-  
-            # The class at the ith index is 
-            # not in the count dict.  
-            # Initialize it to 1. 
-            count[neighbors[i][1]] = 1
-        else: 
-  
-            # Found another item of class  
-            # c[i]. Increment its counter. 
-            count[neighbors[i][1]] += 1
-  
-    return count 
-  
-def FindMax(Dict): 
-  
-    # Find max in dictionary, return  
-    # max value and max index 
-    maximum = -1
-    classification = '' 
-  
-    for key in Dict.keys(): 
-          
-        if Dict[key] > maximum: 
-            maximum = Dict[key] 
-            classification = key 
-  
-    return (classification, maximum)
+        probs=[]
+        for v in d.values():
+            probs.append(v/l)
 
-def UpdateNeighbors(neighbors, item, distance, k, ): 
-    if len(neighbors) < k: 
-  
-        # List is not full, add  
-        # new item and sort 
-        neighbors.append([distance, item['Class']]) 
-        neighbors = sorted(neighbors) 
-    else: 
-  
-        # List is full Check if new  
-        # item should be entered 
-        if neighbors[-1][0] > distance: 
-  
-            # If yes, replace the  
-            # last element with new item 
-            neighbors[-1] = [distance, item['Class']] 
-            neighbors = sorted(neighbors) 
-  
-    return neighbors
-
-def kNNDensity(nItem, k, Items): 
-    if(k > len(Items)): 
-          
-        # k is larger than list 
-        # length, abort 
-        return "k larger than list length"; 
-      
-    # Hold nearest neighbors. 
-    # First item is distance,  
-    # second class 
-    neighbors = []; 
-  
-    for item in Items: 
-        
-        # Find Euclidean Distance 
-        distance = EuclideanDistance(nItem, item); 
-  
-        # Update neighbors, either adding 
-        # the current item in neighbors  
-        # or not. 
-        neighbors = UpdateNeighbors(neighbors, item, distance, k); 
-  
-    # Count the number of each 
-    # class in neighbors 
-    count = CalculateNeighborsClass(neighbors, k); 
-  
-    # Find the max in count, aka the 
-    # class with the most appearances. 
-    sum=0;
-    k = FindMax(count);
-    for i in neighbors:
-        sum+=symmetric_uncertainity(item,i);
-    redundancy_degree = sum/k;
-    
-    return redundancy_degree
-
-
-
-def kNN(nItem, k, Items):
-    if(k > len(Items)): 
-          
-        # k is larger than list 
-        # length, abort 
-        return "k larger than list length"; 
-      
-    # Hold nearest neighbors. 
-    # First item is distance,  
-    # second class 
-    neighbors = []; 
-  
-    for item in Items: 
-        
-        # Find Euclidean Distance 
-        distance = EuclideanDistance(nItem, item); 
-  
-        # Update neighbors, either adding 
-        # the current item in neighbors  
-        # or not. 
-        neighbors = UpdateNeighbors(neighbors, item, distance, k); 
-    return neighbors
-
-def AR(f,C):
-    sum=0;
-    for fi in C:
-        sum=sum+SU(f,fi);
-    avg_redundancy = sum/len(C);
-    return avg_redundancy
-
-
-def fsfc(Dict): 
-    sorted_d = dict( sorted(Dict.items(), key=operator.itemgetter(1),reverse=True));
-    Fs = list(sorted_d);
-    fs0 = Fs[0];
-    Fc=[];
-    Fc.append(fs0);
-    m=1;
-    maxSU=0;
-    for fs in Fs:
-        for fc in Fc:
-            if fc in kNN(fs) and fs in kNN(fc):
-                Fc.append(fs);
-                m=m+1;
-                maxSU=max(maxSU, SU(fs,fc));
-    
-    C=[]
-    label: step
-    for p in range(0,m-1):
-        C.append(Fc[p]);
-    
-    
-    for fi in Fs:
-        if fi not in Fc:
-            j=0;
-            for fcj in Fc:
-                if(SU(fi,fcj)>j):
-                    j=SU(fi,fcj);
-                    x=list2.index(fcj);
-            fcj=Fc[x];
-            if(SU(fi,fcj)>maxSU):
-                C.append(fi);
+        H= 0 
+        for p in probs:
+            if p != 0:
+                H = H + p * math.log(p, 2)
             else:
-                Fc.append(fi);
-                m=m+1;
-                goto step;
-    S=[]            
-    for Cj in C:
-        ar=0;
-        for f in Cj:
-            if(AR(f,Cj),ar):
-                ar=AR(f,Cj);
-                S.append(f);
+                H= H + 0
+        H = H*-1
+        return H
+
+    def gain(self, i, j):
+
+        total = 0
+        f_i = self.training_features[:,i]
+        f_j = self.training_features[:,j]
+
+        unique_i,counts_i= np.unique(f_i, return_counts=True)
+        unique_j,counts_j= np.unique(f_j, return_counts=True)
+
+        di=dict(zip(unique_i,counts_i))
+        dj=dict(zip(unique_j,counts_j))
+
+        vals_i=list(di.keys())
+        vals_j=list(dj.keys())
+
+        #dij is a dictionary containing count of each y value with respect to every x value
+        dij=dict.fromkeys(vals_i)
+        for key in dij.keys():
+            dij[key]=[]
+            for x in range(0,len(vals_j)):
+                dij[key].append(0)
+
+        for x in range(0,len(f_j)):
+            for y in range(0,len(vals_j)):
+                if f_j[x]==vals_j[y]:
+                    for key in dij.keys():
+                        if f_i[x]==key:
+                            dij[key][y]= dij[key][y] + 1
+
+        for key in dij.keys():
+            prod=1
+            pre= di[key]/len(f_i)
+            sm=0
+            for y in dij[key]:
+                p=y/di[key]
+                if p!=0:
+                    sm = sm + p*math.log(p,2)
+                else:
+                    sm = sm + 0
+            sm=sm*-1
+            prod= pre*sm
+            total= total + prod
+                
+        IG = self.entropy(i) - total
+        return IG
+
+    def SU(self, i, j):
+        su = 2*self.gain(i,j)/(self.entropy(i)+self.entropy(j))
+        return su
+
+    def kNNDensity(self, sym_unc, i, k): 
+        num=0
+
+        for x in sym_unc[i]:
+            num=num+x
+            
+        redundancy_degree = num/k
         
+        return redundancy_degree
+
+
+    def kNN(self, i ,k, sym_unc):
+        neighbours=[]
+
+        indexes= list(range(0,len(sym_unc[i])))
+        d=dict.fromkeys(indexes)
+        for key in d.keys():
+            d[key]=sym_unc[i][key]
+
+        sorted_su = {k: v for k, v in sorted(d.items(), key=lambda item: item[1], reverse=True)}
+
+        cnt=0
+        for key in sorted_su.keys():
+            neighbours.append(key)
+            cnt=cnt+1
+            if cnt==k:
+                break
+        
+        return neighbors
+
+    def AR(self, i_f, C, sym_unc):
+        sm=0
+        for feature_index in C:
+            sm= sm+ sym_unc[i_f][feature_index]
+            
+        avg_redundancy = sm/len(C)
+        return avg_redundancy
+
+
+    def fsfc(self):
+        k=4
+        n= self.training_features.shape[1]
+        self.convert_cont_to_discrete()
+        Fs=[]
+        Fc=[]
+        m=0
+
+        #Calculate symmetric uncertainty of every pair of features
+        sym_unc=[]
+
+        for i in range(0,n):
+            l=[]
+            for j in range(0,n):
+                if i==j:
+                    l.append(0)
+                else:
+                    l.append(self.SU(i,j))
+            sym_unc.append(l)
+
+        dknn=[]
+
+        for i in range(0,n):
+            dknn.append(self.kNNdensity(sym_unc,i,k))
+
+        F=list(range(0,n))
+
+        dknn_map=dict.fromkeys(F)
+
+        for key in dknn_map.keys():
+            dknn_map[key]=dknn[key]
+
+            
+        sorted_dknn = {ky: v for ky, v in sorted(dknn_map.items(), key=lambda item: item[1], reverse=True)}
+        Fs = sorted_dknn.values()
+        fs0 = Fs[0]
+        Fc.append(fs0)
+        #m=1
+        m=m+1
+
+        maxSU=0
+        for fs in Fs:
+            i=0
+            j=0
+            for fc in Fc:
+                for key,v in sorted_dknn.items():
+                        if v==fs:
+                            i=key
+                            break
+                for key,v in sorted_dknn.items():
+                        if v==fc:
+                            j=key
+                            break
+
+                if j not in self.kNN(i,k,sym_unc) and i not in self.kNN(j,k,sym_unc):
+                    Fc.append(fs)
+                    m=m+1
+                    
+                    maxSU=max(maxSU, self.SU(i,j))
+        
+        C=[]
+        
+        for p in range(0,m-1):
+            i=0
+            for key,v in sorted_dknn.items():
+                if v==Fc[p]:
+                    i=key
+                    break
+            l=[]
+            l.append(i)
+            C.append(l)
+        
+        for fi in Fs:
+            i=0
+            cj=0
+            if fi not in Fc:
+                j=0
+                pos=0
+                for fcj in Fc:
+                    for key,v in sorted_dknn.items():
+                        if v==fi:
+                            i=key
+                            break
+                    for key,v in sorted_dknn.items():
+                        if v==fcj:
+                            cj=key
+                            break
+                    if(sym_unc[i][cj]>j):
+                        j=sym_unc[i][cj]
+                        pos=cj
+                        
+                if(sym_unc[i][pos]> maxSU):
+                    C[pos].append(i)
+                else:
+                    Fc.append(fi)
+                    m=m+1
+                    l=[]
+                    l.append(i)
+                    C.append(l)
+
+        S=[]            
+        for Cj in C:
+            ar=0
+            pos=0
+            for i_f in Cj:
+                if self.AR(i_f,Cj,sym_unc)>ar:
+                    ar=self.AR(i_f,Cj,sym_unc)
+                    pos=i_f
+            S.append(pos)
+            
+        return S
+            
