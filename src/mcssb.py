@@ -168,11 +168,13 @@ class MCSSB:
 
         T= 50
         alpha=1
+        H=[]
+        h_actual=[]
 
         for iter in range(0,T):
             w=[]
             #H=y_pred
-            H=[]
+            y_pred=[]
             for i in range(self.num_labeled, self.num_samples):
                 alpha_i=[]
                 beta_i=[]
@@ -190,21 +192,21 @@ class MCSSB:
                     beta_i[k] = 0.5*beta_i[k]
                     w1.append(alpha_i[k] + 1000*beta_i[k])
 
-                H.append(w1.index(max(w1)))
+                y_pred.append(w1.index(max(w1)))
                 w.append(max(w1))
                     
             s=max(35000,self.num_samples//5)
 
-            H=np.array(H)
+            y_pred=np.array(H)
 
             indexes= random.choices(np.arange(self.num_labeled,self.num_samples),w,s)
             sample_data_ul= [self.training_data[i] for i in indexes]
-            H = [H[i] for i in indexes]
+            y_pred = [y_pred[i] for i in indexes]
             sample_data_ul= np.array(sample_data_ul)
-            H= np.array(H)
+            y_pred= np.array(y_pred)
 
             acc_training_data= np.vstack((training_data_l, sample_data_ul))
-            acc_labels= np.vstack((self.labels,H))
+            acc_labels= np.vstack((self.labels,y_pred))
 
             classifier = RandomForestClassifier(criterion='entropy')
             classifier.fit(acc_training_data, acc_labels)
@@ -276,13 +278,35 @@ class MCSSB:
             den= A_u + 1000*A_l
 
             alpha= 0.25*math.log(num//den)
-
+            print(alpha)
             if alpha<=0:
                 break
             else:
                 for i in range(self.num_labeled, self.num_samples):
                     for k in range(0,self.num_classes):
+                        if iter==0:
+                            H[i][k]=y_pred[i][k]
                         H[i][k]= H[i][k]+ alpha*h[i][k]
+                h_actual=h
+
+        cnt=0
+        cntt=0
+        for i in range(self.num_labeled, self.num_samples):
+            for k in range(0,self.num_classes):
+                if H[i][k]==1 and H[i][k]==h[i][k]:
+                    cnt=cnt + 1
+
+            cntt=cntt+1
+
+        print("Accuracy: ",((cnt/cntt)*100),"%")
+
+            
+
+            
+
+            
+
+        
 
             
                 

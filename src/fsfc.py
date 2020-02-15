@@ -6,9 +6,8 @@ import numpy as np
 
 class FSFC:
 
-    def __init__(self, training_features, training_df):
+    def __init__(self, training_features):
         self.training_features = training_features
-        self.training_df = training_df
         self.n= training_features.shape[1]
 
     def convert_cont_to_discrete(self):
@@ -109,16 +108,23 @@ class FSFC:
         for key in d.keys():
             d[key]=sym_unc[i][key]
 
-        sorted_su = {k: v for k, v in sorted(d.items(), key=lambda item: item[1], reverse=True)}
+        su=list(d.values())
+        sorted_su=sorted(su, key=float, reverse=True)
+
+        for x in sorted_su:
+            for key in d.keys():
+                if d[key]==x:
+                    neighbours.append(key)
 
         cnt=0
-        for key in sorted_su.keys():
-            neighbours.append(key)
+        knn=[]
+        for n in neighbours:
+            knn.append(n)
             cnt=cnt+1
             if cnt==k:
                 break
         
-        return neighbors
+        return knn
 
     def AR(self, i_f, C, sym_unc):
         sm=0
@@ -152,7 +158,7 @@ class FSFC:
         dknn=[]
 
         for i in range(0,n):
-            dknn.append(self.kNNdensity(sym_unc,i,k))
+            dknn.append(self.kNNDensity(sym_unc,i,k))
 
         F=list(range(0,n))
 
@@ -161,9 +167,18 @@ class FSFC:
         for key in dknn_map.keys():
             dknn_map[key]=dknn[key]
 
-            
-        sorted_dknn = {ky: v for ky, v in sorted(dknn_map.items(), key=lambda item: item[1], reverse=True)}
-        Fs = sorted_dknn.values()
+        vals = list(dknn_map.values())
+        new_vals= sorted(vals, key=float, reverse=True)
+        new_keys=[]
+
+        for x in new_vals:
+            for key in dknn_map.keys():
+                if dknn_map[key]==x:
+                    new_keys.append(key)
+                    
+        #contains the keys of the sorted features
+        sorted_features= new_keys
+        Fs = sorted_features
         fs0 = Fs[0]
         Fc.append(fs0)
         #m=1
@@ -171,51 +186,31 @@ class FSFC:
 
         maxSU=0
         for fs in Fs:
-            i=0
-            j=0
+            i= fs
             for fc in Fc:
-                for key,v in sorted_dknn.items():
-                        if v==fs:
-                            i=key
-                            break
-                for key,v in sorted_dknn.items():
-                        if v==fc:
-                            j=key
-                            break
-
+                j= fc
                 if j not in self.kNN(i,k,sym_unc) and i not in self.kNN(j,k,sym_unc):
                     Fc.append(fs)
                     m=m+1
                     
-                    maxSU=max(maxSU, self.SU(i,j))
+                    maxSU=max(maxSU, sym_unc[i][j])
         
         C=[]
         
         for p in range(0,m-1):
-            i=0
-            for key,v in sorted_dknn.items():
-                if v==Fc[p]:
-                    i=key
-                    break
+            i=Fc[p]
             l=[]
             l.append(i)
             C.append(l)
+
+        print(C)
         
         for fi in Fs:
-            i=0
-            cj=0
             if fi not in Fc:
-                j=0
+                i=fi
                 pos=0
                 for fcj in Fc:
-                    for key,v in sorted_dknn.items():
-                        if v==fi:
-                            i=key
-                            break
-                    for key,v in sorted_dknn.items():
-                        if v==fcj:
-                            cj=key
-                            break
+                    cj=fcj
                     if(sym_unc[i][cj]>j):
                         j=sym_unc[i][cj]
                         pos=cj
@@ -223,7 +218,7 @@ class FSFC:
                 if(sym_unc[i][pos]> maxSU):
                     C[pos].append(i)
                 else:
-                    Fc.append(fi)
+                    Fc.append(i)
                     m=m+1
                     l=[]
                     l.append(i)

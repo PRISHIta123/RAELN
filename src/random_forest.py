@@ -1,27 +1,19 @@
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
 
-sc = StandardScaler()
+class RF:
+    def __init__(self,training_data,labels,testing_data,tlabels):
+        self.training_data= training_data
+        self.labels= labels
+        self.testing_data= testing_data
+        seld.tlabels=tlabels
 
-X_train = sc.fit_transform(X_train) 
-X_test = sc.transform(X_test)
+    def training(self):
+        classifier = RandomForestClassifier() 
+        classifier.fit(self.training_data, self.labels)
+        y_pred = classifier.predict(self.testing_data)
+        y_pred = np.array(y_pred) 
 
+        Accuracy=accuracy_score(self.tlabels, y_pred)*100
 
-regressor = RandomForestRegressor(n_estimators=20, random_state=0) 
-regressor.fit(X_train, y_train)
-y_pred = regressor.predict(X_test)
-
-cutoff = 0.99
-
-y_pred_classes = np.zeros_like(y_pred) 
-y_pred_classes[y_pred > cutoff] = 1
-
-y_test_classes = np.zeros_like(y_pred) 
-y_test_classes[y_test_classes > cutoff] = 1
-
-print(classification_report(y_test_classes, y_pred_classes))
-
-Accuracy=accuracy_score(y_test_classes, y_pred_classes)*100
-
-print(Accuracy)
+        print(Accuracy)
