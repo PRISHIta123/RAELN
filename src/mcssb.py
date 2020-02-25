@@ -11,10 +11,11 @@ from sklearn.externals import joblib
 
 class MCSSB:
 
-    def __init(self, training_data, labels, test_data, tlabels, num_samples, num_labeled):
+    def __init__(self, training_data, labels, test_data, tlabels, num_samples, num_labeled, num_classes):
         self.training_data = training_data
         self.labels = labels
-        self.ohe_labels= np.zeros((self.labels.size, self.labels.max()+1))
+        self.num_classes = num_classes
+        self.ohe_labels= np.zeros((len(self.labels), num_classes))
         self.num_classes= 10
         self.test_data= test_data
         self.tlabels= tlabels
@@ -61,6 +62,8 @@ class MCSSB:
                 b_i.append(exp(pred_y[i][x])//den)
 
             self.b.append(b_i)
+
+        print(self.b[0])
             
 
     def set_tau(self):
@@ -182,6 +185,8 @@ class MCSSB:
                 for k in range(0,self.num_classes):
                     alpha_i.append(0)
                     beta_i.append(0)
+
+                for k in range(0,self.num_classes):
                         
                     for j in range(self.num_labeled, self.num_samples):
                         alpha_i[k]= alpha_i[k] +((self.S[i][j]*(self.b[i][k]- self.tau[i][j][k]))//self.Z_u[i][j])
@@ -195,7 +200,7 @@ class MCSSB:
                 y_pred.append(w1.index(max(w1)))
                 w.append(max(w1))
                     
-            s=max(35000,self.num_samples//5)
+            s=max(30000,self.num_samples//5)
 
             y_pred=np.array(H)
 

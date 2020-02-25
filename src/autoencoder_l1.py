@@ -70,7 +70,7 @@ class Autoencoder_L1:
         optimizer=tf.train.AdamOptimizer(self.lr)
         train=optimizer.minimize(loss + regularization_penalty)
         init=tf.global_variables_initializer()
-        num_epoch=500
+        num_epoch=250
         batch_size=10000
         
         x=[]
@@ -96,7 +96,7 @@ class Autoencoder_L1:
                 y.append(train_loss)
                 
         for var, val in zip(vars, vars_vals):
-            if var.get_shape()==(43, 22):
+            if var.get_shape()==(43, 38):
                 l=val
                 
         plt.rcParams['figure.figsize']=(20,20)

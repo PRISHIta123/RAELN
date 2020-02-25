@@ -23,7 +23,7 @@ class Ladder:
         self.num_samples = num_samples
         self.num_classes = num_classes
         self.batch_size= batch_size
-        self.denoising_cost = [100.0, 10.0, 1.0, 0.10]
+        self.denoising_cost = [1000.0, 10.0, 0.1, 0.1]
         self.num_batches = len(training_data)//self.batch_size
         self.nlpb =0
 
@@ -54,11 +54,11 @@ class Ladder:
 
 
     def unlabeled(self, x):
-        ul = tf.slice(x,[self.num_labeled,0],[-1,-1])
+        ul = tf.slice(x,[100,0],[-1,-1])
         return ul
 
     def labeled(self, x):
-        l = tf.slice(x,[0,0],[self.num_labeled,-1])
+        l = tf.slice(x,[0,0],[100,-1])
         return l
     
     def batch_norm(self, vals):
@@ -135,6 +135,7 @@ class Ladder:
         
         idy = np.arange(0, self.num_labeled)
         np.random.shuffle(idy)
+        idy=idy[:100]
         data_labeled = [self.training_data[i] for i in idy]
         data_shuffle_y = [self.labels[i] for i in idy]
 
@@ -180,7 +181,7 @@ class Ladder:
                          beta.append(tf.Variable(0.0 * tf.ones([self.layer_sizes[l+1]])))
                          gamma.append(tf.Variable(1.0 * tf.ones([self.layer_sizes[l+1]])))
 
-        noise_std=0.3
+        noise_std=0.1
 
         z_corr, noise, p_enc_corr= self.encoder(X,W,beta,gamma,noise_std)
         z, n_0, p_enc = self.encoder(X,W,beta,gamma,0.0)
@@ -206,7 +207,7 @@ class Ladder:
         optimizer=tf.train.AdamOptimizer(self.lr)
         train=optimizer.minimize(loss)
         init=tf.global_variables_initializer()
-        num_epoch=50
+        num_epoch=150
 
         with tf.Session() as sess:
             sess.run(init)
@@ -214,14 +215,15 @@ class Ladder:
             for epoch in range(num_epoch):
                 
                 #learning rate decay
-                self.lr = self.lr * (0.8 **(epoch//25))
+                self.lr = self.lr * (0.96 **(epoch//50))
                 for iteration in range(self.num_batches):
                     X_batch, Y_batch =self.next_batch()
                     sess.run(train,feed_dict={X:X_batch, Y:Y_batch, training: True})
                 train_loss=loss.eval(feed_dict={X:X_batch, Y:Y_batch, training: True})
-                print("epoch {} loss {}".format(epoch,train_loss))
-
-            print ("Final Accuracy: ", sess.run(accuracy, feed_dict={X:self.testing_data, Y:self.t_labels, training: False}), "%")
+                print("epoch {} ".format(epoch))
+    
+            print ("Training Accuracy: ", sess.run(accuracy, feed_dict={X:self.training_data[0:self.num_labeled], Y:self.labels, training: False}), "%")
+            print ("Testing Accuracy: ", sess.run(accuracy, feed_dict={X:self.testing_data, Y:self.t_labels, training: False}), "%")
 
         
 

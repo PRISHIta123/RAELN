@@ -113,7 +113,7 @@ class FSFC:
 
         for x in sorted_su:
             for key in d.keys():
-                if d[key]==x:
+                if d[key]==x and key not in neighbours:
                     neighbours.append(key)
 
         cnt=0
@@ -136,8 +136,8 @@ class FSFC:
 
 
     def fsfc(self):
-        k=4
-        n= self.training_features.shape[1]
+        k=5
+        n= 41
         self.convert_cont_to_discrete()
         Fs=[]
         Fc=[]
@@ -147,6 +147,7 @@ class FSFC:
         sym_unc=[]
 
         for i in range(0,n):
+            print(i)
             l=[]
             for j in range(0,n):
                 if i==j:
@@ -173,7 +174,7 @@ class FSFC:
 
         for x in new_vals:
             for key in dknn_map.keys():
-                if dknn_map[key]==x:
+                if dknn_map[key]==x and key not in new_keys:
                     new_keys.append(key)
                     
         #contains the keys of the sorted features
@@ -184,17 +185,32 @@ class FSFC:
         #m=1
         m=m+1
 
+        print(Fs)
+        print(Fc)
+
         maxSU=0
         for fs in Fs:
             i= fs
+            temp=maxSU
+            l1=self.kNN(i,k,sym_unc)
+            print("\n",i,l1)
+            flag=0
             for fc in Fc:
                 j= fc
-                if j not in self.kNN(i,k,sym_unc) and i not in self.kNN(j,k,sym_unc):
-                    Fc.append(fs)
-                    m=m+1
-                    
-                    maxSU=max(maxSU, sym_unc[i][j])
-        
+                if j!=i:
+                    l2=self.kNN(j,k,sym_unc)
+                    print(j,l2)
+                    if j not in l1 and i not in l2:
+                        flag=1
+                        maxSU=max(maxSU, sym_unc[i][j])
+                    else:
+                        flag=0
+                        maxSU=temp
+                        break
+            if flag==1:
+                Fc.append(fs)
+                m=m+1
+                        
         C=[]
         
         for p in range(0,m-1):
@@ -204,19 +220,27 @@ class FSFC:
             C.append(l)
 
         print(C)
+        print(maxSU)
         
         for fi in Fs:
+            j=0
+            cnt=0
             if fi not in Fc:
                 i=fi
                 pos=0
                 for fcj in Fc:
                     cj=fcj
+                    
                     if(sym_unc[i][cj]>j):
                         j=sym_unc[i][cj]
                         pos=cj
-                        
+                        index=cnt
+                    cnt=cnt+1
+                    
                 if(sym_unc[i][pos]> maxSU):
-                    C[pos].append(i)
+                    print(index)
+                    C.index([pos]).append(i)
+                    
                 else:
                     Fc.append(i)
                     m=m+1
@@ -229,7 +253,9 @@ class FSFC:
             ar=0
             pos=0
             for i_f in Cj:
-                if self.AR(i_f,Cj,sym_unc)>ar:
+                x=self.AR(i_f,Cj,sym_unc)
+                print(x)
+                if x>=ar:
                     ar=self.AR(i_f,Cj,sym_unc)
                     pos=i_f
             S.append(pos)

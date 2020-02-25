@@ -70,7 +70,7 @@ class Autoencoder_L2:
         optimizer=tf.train.AdamOptimizer(self.lr)
         train=optimizer.minimize(loss + regularization_penalty)
         init=tf.global_variables_initializer()
-        num_epoch=500
+        num_epoch=250
         batch_size=10000
         
         x=[]
@@ -96,7 +96,7 @@ class Autoencoder_L2:
                 y.append(train_loss)
                 
         for var, val in zip(vars, vars_vals):
-            if var.get_shape()==(41, 20):
+            if var.get_shape()==(43, 38):
                 l=val
                 
         plt.rcParams['figure.figsize']=(20,20)
@@ -124,8 +124,8 @@ class Autoencoder_L2:
         plt.ylabel("Feature Importance Values")
         plt.show()
         
-        best_features=sorted(range(len(self.var_imp)), key=lambda i: self.var_imp[i], reverse=True)[:10]
-        print("Top 10 features:")
+        best_features=sorted(range(len(self.var_imp)), key=lambda i: self.var_imp[i], reverse=True)[:30]
+        print("Top 30 features:")
         for i in best_features:
             print(feature_names[i])
 
