@@ -81,7 +81,7 @@ testing_data = np.array(testing_df)
 np.random.shuffle(training_data)
 
 data = training_data[0:150000,0:30]
-labels = training_data[0:1000,30]
+labels = training_data[0:5000,30]
 labels_sp = training_data[0:150000,30]
 test_data= testing_data[0:50000,0:30]
 tlabels= testing_data[0:50000,30]
@@ -93,7 +93,7 @@ learning_rate= 0.005
 actf1=tf.nn.elu
 actf2=tf.nn.softmax
 layer_sizes=[30, 25, 15, 10]
-num_labeled=1000
+num_labeled=5000
 num_samples=len(data)
 num_classes=10
 batch_size=1000

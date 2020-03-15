@@ -156,6 +156,7 @@ class Ladder:
 
 
     def training(self):
+        #Placeholders
         X=tf.placeholder(tf.float32,shape=[None,self.layer_sizes[0]])
         Y=tf.placeholder(tf.float32)
 
@@ -204,10 +205,14 @@ class Ladder:
         correct_prediction = tf.equal(tf.argmax(p_enc, -1), tf.argmax(Y, -1))  # no of correct predictions
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float")) * tf.constant(100.0)
 
+        #For Per class accuracy
+        pred_func= tf.argmax(p_enc,-1)
+        #For Per class accuracy
+
         optimizer=tf.train.AdamOptimizer(self.lr)
         train=optimizer.minimize(loss)
         init=tf.global_variables_initializer()
-        num_epoch=150
+        num_epoch=250        
 
         with tf.Session() as sess:
             sess.run(init)
@@ -221,9 +226,65 @@ class Ladder:
                     sess.run(train,feed_dict={X:X_batch, Y:Y_batch, training: True})
                 train_loss=loss.eval(feed_dict={X:X_batch, Y:Y_batch, training: True})
                 print("epoch {} ".format(epoch))
-    
-            print ("Training Accuracy: ", sess.run(accuracy, feed_dict={X:self.training_data[0:self.num_labeled], Y:self.labels, training: False}), "%")
-            print ("Testing Accuracy: ", sess.run(accuracy, feed_dict={X:self.testing_data, Y:self.t_labels, training: False}), "%")
+
+            preds=sess.run(pred_func, feed_dict={X:self.training_data[0:self.num_labeled]})
+            preds1=sess.run(pred_func, feed_dict={X:self.testing_data})
+
+            #Per Class Train
+            cnt=[]
+            cnt_pred=[]
+            for i in range(0,self.num_classes):
+                cnt.append(0)
+                cnt_pred.append(0)
+
+            lbls=[np.where(r==1)[0][0] for r in self.labels]
+                
+            for label in lbls:
+                for i in range(0,self.num_classes):
+                    if label==i:
+                        cnt[i]=cnt[i]+1
+                        break
+                    
+            for i in range(0,len(self.labels)):
+                if preds[i]==lbls[i]:
+                    for j in range(0,self.num_classes):
+                        if j==lbls[i]:
+                            cnt_pred[j]=cnt_pred[j]+1
+                            break
+            per_class_acc=[]
+            for i in range(0,self.num_classes):
+                per_class_acc.append(cnt_pred[i]/cnt[i])
+                
+            #Per Class Test
+            cnt1=[]
+            cnt_pred1=[]
+            for i in range(0,self.num_classes):
+                cnt1.append(0)
+                cnt_pred1.append(0)
+
+            lbls1=[np.where(r==1)[0][0] for r in self.t_labels]
+            print(set(lbls1))
+                
+            for label in lbls1:
+                for i in range(0,self.num_classes):
+                    if label==i:
+                        cnt1[i]=cnt1[i]+1
+                        break
+                    
+            for i in range(0,len(self.t_labels)):
+                if preds1[i]==lbls1[i]:
+                    for j in range(0,self.num_classes):
+                        if j==lbls1[i]:
+                            cnt_pred1[j]=cnt_pred1[j]+1
+                            break
+            per_class_acc1=[]
+            for i in range(0,self.num_classes):
+                per_class_acc1.append(cnt_pred1[i]/cnt1[i])
+
+            print("Per Class Accuracy (Training):" ,per_class_acc)
+            print("Per Class Accuracy (Testing):",per_class_acc1)
+            print("Training Accuracy: ", sess.run(accuracy, feed_dict={X:self.training_data[0:self.num_labeled], Y:self.labels, training: False}), "%")
+            print("Testing Accuracy: ", sess.run(accuracy, feed_dict={X:self.testing_data, Y:self.t_labels, training: False}), "%")
 
         
 
