@@ -18,8 +18,8 @@ import mcssb as mcssb
 import random_forest as rf
 import naive_bayes as nb
 
-training_df=pd.read_csv("C://Users//Desktop//Malware_Classification_using_ML//data//NSL_KDD_datasets//NSL_KDDTrain+.csv",header=None)
-testing_df=pd.read_csv("C://Users//Desktop//Malware_Classification_using_ML//data//NSL_KDD_datasets//NSL_KDDTest+.csv",header=None)
+training_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//NSL_KDD_datasets//NSL_KDDTrain+.csv",header=None)
+testing_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//NSL_KDD_datasets//NSL_KDDTest+.csv",header=None)
 
 training_df= training_df.dropna()
 testing_df= testing_df.dropna()
@@ -81,8 +81,6 @@ testing_df = testing_df.ix[:,sf]
 
 training_data = np.array(training_df)
 testing_data = np.array(testing_df)
-
-np.random.shuffle(training_data)
 
 data = training_data[0:120000,0:30]
 labels = training_labels[0:1000]

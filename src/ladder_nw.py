@@ -212,7 +212,7 @@ class Ladder:
         optimizer=tf.train.AdamOptimizer(self.lr)
         train=optimizer.minimize(loss)
         init=tf.global_variables_initializer()
-        num_epoch=150        
+        num_epoch=250        
 
         with tf.Session() as sess:
             sess.run(init)
