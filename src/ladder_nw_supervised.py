@@ -143,7 +143,7 @@ class Ladder:
         optimizer=tf.train.AdamOptimizer(self.lr)
         train=optimizer.minimize(loss)
         init=tf.global_variables_initializer()
-        num_epoch=250
+        num_epoch=150
 
         with tf.Session() as sess:
             sess.run(init)
@@ -158,7 +158,7 @@ class Ladder:
                 train_loss=loss.eval(feed_dict={X:X_batch, Y:Y_batch, training: True})
                 print("epoch {}".format(epoch))
 
-            preds=sess.run(pred_func, feed_dict={X:self.training_data})
+            preds=sess.run(pred_func, feed_dict={X:self.training_data[0:self.num_labeled]})
             preds1=sess.run(pred_func, feed_dict={X:self.testing_data})
 
             #Per Class Train
@@ -169,7 +169,6 @@ class Ladder:
                 cnt_pred.append(0)
 
             lbls=[np.where(r==1)[0][0] for r in self.labels]
-            print(set(lbls))
                 
             for label in lbls:
                 for i in range(0,self.num_classes):

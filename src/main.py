@@ -18,8 +18,8 @@ import mcssb as mcssb
 import random_forest as rf
 import naive_bayes as nb
 
-training_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_datasets//UNSW_NB15_training-set.csv")
-testing_df=pd.read_csv("C://Users//PrishitaRay//Desktop//Malware_Classification_using_ML//data//UNSW_datasets//UNSW_NB15_testing-set.csv")
+training_df=pd.read_csv("C://Users//Desktop//Malware_Classification_using_ML//data//UNSW_datasets//UNSW_NB15_training-set.csv")
+testing_df=pd.read_csv("C://Users//Desktop//Malware_Classification_using_ML//data//UNSW_datasets//UNSW_NB15_testing-set.csv")
 
 training_df= training_df.dropna()
 testing_df= testing_df.dropna()
