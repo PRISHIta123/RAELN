@@ -1,4 +1,4 @@
-# Semi_Supervised_Model_for_Classification_of_Network_Intrusion_Malwares
+# Combined_Model_for_Classification_of_Network_Intrusion_Malwares
 
 All source code files are available in the src folder  
 Associated plots can be accessed in the plots.pdf file   
@@ -16,7 +16,7 @@ Overview of steps involved:
 Link to research paper describing the FSFC algorithm:
 https://www.researchgate.net/publication/328108410_A_new_unsupervised_feature_selection_algorithm_using_similarity-based_feature_clustering
 
-3. Data of selected features is passed through proposed semi-supervised ladder networks model, fully-supervised ladder networks model, Random Forest and Naive Bayes Algorithms for multi-class classification (code can be accessed under src/ladder_nw.py, src/ladder_nw_supervised.py, src/random_forest.py, src/naive_bayes.py)
+3. Data of selected features is passed through semi-supervised ladder networks model, fully-supervised ladder networks model, Random Forest and Naive Bayes Algorithms for multi-class classification (code can be accessed under src/ladder_nw.py, src/ladder_nw_supervised.py, src/random_forest.py, src/naive_bayes.py)
 
 Link to research paper describing Ladder Networks:
 https://arxiv.org/pdf/1507.02672v2.pdf
