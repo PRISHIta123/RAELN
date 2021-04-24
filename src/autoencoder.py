@@ -8,9 +8,10 @@ from tensorflow.contrib.layers import fully_connected
 
 class Autoencoder:
     
-    def __init__(self, training_data, lr, actf, num_inputs, num_hid, num_output, training_df):
+    def __init__(self, variant, training_data, lr, actf, num_inputs, num_hid, num_output, training_df):
         self.training_data = training_data
         self.training_df = training_df
+        self.variant= variant
         self.lr = lr
         self.actf = actf
         self.num_inputs = num_inputs
@@ -55,14 +56,32 @@ class Autoencoder:
         b4=tf.Variable(tf.zeros(self.num_output))
 
         hid_layer1=self.actf(tf.matmul(X,w1)+b1)
-        hid_layer2=self.actf(tf.matmul(hid_layer1,w2)+b2)
+        if self.variant=="AEDropout":
+            hid_layer2=tf.nn.dropout(tf.matmul(hid_layer1,w2)+b2,0.8)
+        else:
+            hid_layer2=self.actf(tf.matmul(hid_layer1,w2)+b2)
         hid_layer3=self.actf(tf.matmul(hid_layer2,w3)+b3)
         output_layer=self.actf(tf.matmul(hid_layer3,w4)+b4)
 
         loss=tf.reduce_mean(tf.square(output_layer-X))
         
         optimizer=tf.train.AdamOptimizer(self.lr)
-        train=optimizer.minimize(loss)
+
+        if self.variant=="AE" or self.variant=="AEDropout":
+            train=optimizer.minimize(loss)
+
+        elif self.variant=="AEL1":
+            all_weights=[w1]+[w2]+[w3]+[w4]
+            l1_regularizer=tf.contrib.layers.l1_regularizer(scale=0.005,scope=None)
+            regularization_penalty=tf.contrib.layers.apply_regularization(l1_regularizer,all_weights)
+            train=optimizer.minimize(loss+regularization_penalty)
+
+        elif self.variant=="AEL2":
+            all_weights=[w1]+[w2]+[w3]+[w4]
+            l2_regularizer=tf.contrib.layers.l2_regularizer(scale=0.005,scope=None)
+            regularization_penalty=tf.contrib.layers.apply_regularization(l2_regularizer,all_weights)
+            train=optimizer.minimize(loss+regularization_penalty)
+
         init=tf.global_variables_initializer()
         num_epoch=250
         batch_size=10000
@@ -70,33 +89,34 @@ class Autoencoder:
         x=[]
         y=[]
         l=[]
-        
-        with tf.Session() as sess:
-            sess.run(init)
-            vars=tf.trainable_variables()
-            vars_vals=sess.run(vars)
-            
-            for epoch in range(num_epoch):
-                num_batches=len(self.training_data)//batch_size
+
+        with tf.device('/gpu:0'):
+            with tf.Session() as sess:
+                sess.run(init)
+                vars=tf.trainable_variables()
+                vars_vals=sess.run(vars)
                 
-                #learning rate decay
-                self.lr = self.lr * (0.7 **(epoch//25))
-                for iteration in range(num_batches):
-                    X_batch=self.next_batch(batch_size,self.training_data)
-                    sess.run(train,feed_dict={X:X_batch})
-                train_loss=loss.eval(feed_dict={X:X_batch})
-                print("epoch {} loss {}".format(epoch,train_loss))
-                x.append(epoch)
-                y.append(train_loss)
+                for epoch in range(num_epoch):
+                    num_batches=len(self.training_data)//batch_size
+                    
+                    #learning rate decay
+                    self.lr = self.lr * (0.7 **(epoch//25))
+                    for iteration in range(num_batches):
+                        X_batch=self.next_batch(batch_size,self.training_data)
+                        sess.run(train,feed_dict={X:X_batch})
+                    train_loss=loss.eval(feed_dict={X:X_batch})
+                    print("epoch {} loss {}".format(epoch,train_loss))
+                    x.append(epoch)
+                    y.append(train_loss)
                 
         for var, val in zip(vars, vars_vals):
-            if var.get_shape()==(43,38):
+            if var.get_shape()==(43,38) or var.get_shape()==(41,35):
                 l=val
                 
         plt.rcParams['figure.figsize']=(20,20)
         plt.plot(x,y)
         plt.xlabel("Epochs")
-        plt.ylabel("Training loss")
+        plt.ylabel("Autoencoder Training loss")
         plt.show()
         
         self.variable_importance(l)
@@ -112,18 +132,20 @@ class Autoencoder:
         plt.close()
         plt.rcParams['figure.figsize']=(20,20)
         x_vals=np.arange(len(features))
+        print(x_vals.shape)
+        print(len(self.var_imp))
         plt.bar(x_vals,self.var_imp,align='center',alpha=1)
         plt.xticks(x_vals,features)
-        plt.xlabel("Feature Indexes")
+        plt.xlabel("Feature Indices")
         plt.ylabel("Feature Importance Values")
         plt.show()
         
         best_features=sorted(range(len(self.var_imp)), key=lambda i: self.var_imp[i], reverse=True)[:30]
-        print("Top 30 features:")
+        print("\nTop 30 selected features:")
         for i in best_features:
             print(feature_names[i])
 
-        print("Variance", np.var(self.var_imp))
+        print("\nVariance", np.var(self.var_imp))
 
         return best_features
 

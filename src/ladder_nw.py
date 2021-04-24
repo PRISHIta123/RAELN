@@ -172,15 +172,15 @@ class Ladder:
         gamma=[]
    
         for l in range(self.L):
-                         w=tf.Variable(tf.random_normal((self.layer_sizes[l],self.layer_sizes[l+1]), seed=0))/ math.sqrt(self.layer_sizes[l])
-                         W.append(w)
-                         v=tf.Variable(tf.random_normal((self.layer_sizes[l+1],self.layer_sizes[l]), seed=0))/ math.sqrt(self.layer_sizes[l+1])
-                         V.append(v)
+            w=tf.Variable(tf.random_normal((self.layer_sizes[l],self.layer_sizes[l+1]), seed=0))/ math.sqrt(self.layer_sizes[l])
+            W.append(w)
+            v=tf.Variable(tf.random_normal((self.layer_sizes[l+1],self.layer_sizes[l]), seed=0))/ math.sqrt(self.layer_sizes[l+1])
+            V.append(v)
 
 
         for l in range(self.L):
-                         beta.append(tf.Variable(0.0 * tf.ones([self.layer_sizes[l+1]])))
-                         gamma.append(tf.Variable(1.0 * tf.ones([self.layer_sizes[l+1]])))
+            beta.append(tf.Variable(0.0 * tf.ones([self.layer_sizes[l+1]])))
+            gamma.append(tf.Variable(1.0 * tf.ones([self.layer_sizes[l+1]])))
 
         noise_std=0.1
 
@@ -214,80 +214,79 @@ class Ladder:
         init=tf.global_variables_initializer()
         num_epoch=250        
 
-        with tf.Session() as sess:
-            sess.run(init)
-            
-            for epoch in range(num_epoch):
+        with tf.device('/gpu:0'):
+            with tf.Session() as sess:
+                sess.run(init)
                 
-                #learning rate decay
-                self.lr = self.lr * (0.96 **(epoch//50))
-                for iteration in range(self.num_batches):
-                    X_batch, Y_batch =self.next_batch()
-                    sess.run(train,feed_dict={X:X_batch, Y:Y_batch, training: True})
-                train_loss=loss.eval(feed_dict={X:X_batch, Y:Y_batch, training: True})
-                print("epoch {} ".format(epoch))
-
-            preds=sess.run(pred_func, feed_dict={X:self.training_data[0:self.num_labeled]})
-            preds1=sess.run(pred_func, feed_dict={X:self.testing_data})
-
-            #Per Class Train
-            cnt=[]
-            cnt_pred=[]
-            for i in range(0,self.num_classes):
-                cnt.append(0)
-                cnt_pred.append(0)
-
-            lbls=[np.where(r==1)[0][0] for r in self.labels]
-                
-            for label in lbls:
-                for i in range(0,self.num_classes):
-                    if label==i:
-                        cnt[i]=cnt[i]+1
-                        break
+                for epoch in range(num_epoch):
                     
-            for i in range(0,len(self.labels)):
-                if preds[i]==lbls[i]:
-                    for j in range(0,self.num_classes):
-                        if j==lbls[i]:
-                            cnt_pred[j]=cnt_pred[j]+1
-                            break
-            per_class_acc=[]
-            for i in range(0,self.num_classes):
-                per_class_acc.append(cnt_pred[i]/cnt[i])
-                
-            #Per Class Test
-            cnt1=[]
-            cnt_pred1=[]
-            for i in range(0,self.num_classes):
-                cnt1.append(0)
-                cnt_pred1.append(0)
+                    #learning rate decay
+                    self.lr = self.lr * (0.96 **(epoch//50))
+                    for iteration in range(self.num_batches):
+                        X_batch, Y_batch =self.next_batch()
+                        sess.run(train,feed_dict={X:X_batch, Y:Y_batch, training: True})
+                    train_loss=loss.eval(feed_dict={X:X_batch, Y:Y_batch, training: True})
+                    print("epoch {} ".format(epoch))
 
-            lbls1=[np.where(r==1)[0][0] for r in self.t_labels]
-            print(set(lbls1))
-                
-            for label in lbls1:
+                preds=sess.run(pred_func, feed_dict={X:self.training_data[0:self.num_labeled]})
+                preds1=sess.run(pred_func, feed_dict={X:self.testing_data})
+
+                #Per Class Train
+                cnt=[]
+                cnt_pred=[]
                 for i in range(0,self.num_classes):
-                    if label==i:
-                        cnt1[i]=cnt1[i]+1
-                        break
+                    cnt.append(0)
+                    cnt_pred.append(0)
+
+                lbls=[np.where(r==1)[0][0] for r in self.labels]
                     
-            for i in range(0,len(self.t_labels)):
-                if preds1[i]==lbls1[i]:
-                    for j in range(0,self.num_classes):
-                        if j==lbls1[i]:
-                            cnt_pred1[j]=cnt_pred1[j]+1
+                for label in lbls:
+                    for i in range(0,self.num_classes):
+                        if label==i:
+                            cnt[i]=cnt[i]+1
                             break
-            per_class_acc1=[]
-            for i in range(0,self.num_classes):
-                per_class_acc1.append(cnt_pred1[i]/cnt1[i])
+                        
+                for i in range(0,len(self.labels)):
+                    if preds[i]==lbls[i]:
+                        for j in range(0,self.num_classes):
+                            if j==lbls[i]:
+                                cnt_pred[j]=cnt_pred[j]+1
+                                break
+                per_class_acc=[]
+                for i in range(0,self.num_classes):
+                    per_class_acc.append(cnt_pred[i]/(cnt[i]+1e-6))
+                    
+                #Per Class Test
+                cnt1=[]
+                cnt_pred1=[]
+                for i in range(0,self.num_classes):
+                    cnt1.append(0)
+                    cnt_pred1.append(0)
 
-            print("Per Class Accuracy (Training):" ,per_class_acc)
-            print("Per Class Accuracy (Testing):",per_class_acc1)
-            print("Training Accuracy: ", sess.run(accuracy, feed_dict={X:self.training_data[0:self.num_labeled], Y:self.labels, training: False}), "%")
-            print("Testing Accuracy: ", sess.run(accuracy, feed_dict={X:self.testing_data, Y:self.t_labels, training: False}), "%")
+                lbls1=[np.where(r==1)[0][0] for r in self.t_labels]
+                    
+                for label in lbls1:
+                    for i in range(0,self.num_classes):
+                        if label==i:
+                            cnt1[i]=cnt1[i]+1
+                            break
+                        
+                for i in range(0,len(self.t_labels)):
+                    if preds1[i]==lbls1[i]:
+                        for j in range(0,self.num_classes):
+                            if j==lbls1[i]:
+                                cnt_pred1[j]=cnt_pred1[j]+1
+                                break
+                per_class_acc1=[]
+                for i in range(0,self.num_classes):
+                    per_class_acc1.append(cnt_pred1[i]/(cnt1[i]+1e-6))
 
-        
+                print("Per Class Accuracy (Training):" ,per_class_acc)
+                print("Per Class Accuracy (Testing):",per_class_acc1)
+                print("Training Accuracy: ", sess.run(accuracy, feed_dict={X:self.training_data[0:self.num_labeled], Y:self.labels, training: False}), "%")
+                print("Testing Accuracy: ", sess.run(accuracy, feed_dict={X:self.testing_data, Y:self.t_labels, training: False}), "%")
 
+                return preds1
         
         
 

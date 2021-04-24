@@ -3,11 +3,15 @@ from math import log
 import math  
 from random import shuffle
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+import pandas as pd
 
 class FSFC:
 
-    def __init__(self, training_features):
+    def __init__(self, training_features, training_df):
         self.training_features = training_features
+        self.training_df= training_df
         self.n= training_features.shape[1]
 
     def convert_cont_to_discrete(self):
@@ -147,7 +151,7 @@ class FSFC:
         sym_unc=[]
 
         for i in range(0,n):
-            print(i)
+ 
             l=[]
             for j in range(0,n):
                 if i==j:
@@ -185,21 +189,16 @@ class FSFC:
         #m=1
         m=m+1
 
-        print(Fs)
-        print(Fc)
-
         maxSU=0
         for fs in Fs:
             i= fs
             temp=maxSU
             l1=self.kNN(i,k,sym_unc)
-            print("\n",i,l1)
             flag=0
             for fc in Fc:
                 j= fc
                 if j!=i:
                     l2=self.kNN(j,k,sym_unc)
-                    print(j,l2)
                     if j not in l1 and i not in l2:
                         flag=1
                         maxSU=max(maxSU, sym_unc[i][j])
@@ -219,8 +218,6 @@ class FSFC:
             l.append(i)
             C.append(l)
 
-        print(C)
-        print(maxSU)
         
         for fi in Fs:
             j=0
@@ -238,7 +235,6 @@ class FSFC:
                     cnt=cnt+1
                     
                 if(sym_unc[i][pos]> maxSU):
-                    print(index)
                     C.index([pos]).append(i)
                     
                 else:
@@ -254,11 +250,19 @@ class FSFC:
             pos=0
             for i_f in Cj:
                 x=self.AR(i_f,Cj,sym_unc)
-                print(x)
                 if x>=ar:
                     ar=self.AR(i_f,Cj,sym_unc)
                     pos=i_f
             S.append(pos)
+
+        feature_names= list(self.training_df.columns)
+
+        features= []
+
+        print("\nTop Selected features:")
+        for i in C:
+            print(feature_names[i[0]])
+            features.append(i[0])
+
             
-        return S
-            
+        return features

@@ -21,3 +21,5 @@ class RF:
 
         print("Training Accuracy: ",Train_Accuracy)
         print("Testing Accuracy: ",Test_Accuracy)
+
+        return y_pred

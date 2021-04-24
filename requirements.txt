@@ -1,0 +1,6 @@
+matplotlib==2.1.0
+pandas==0.21.0
+numpy==1.18.5
+sklearn
+tensorflow-gpu==1.15
+

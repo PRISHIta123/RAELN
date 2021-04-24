@@ -21,3 +21,5 @@ class NB:
 
         print("Training Accuracy: ",Train_Accuracy)
         print("Testing Accuracy: ",Test_Accuracy)
+
+        return y_pred
