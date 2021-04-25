@@ -29,15 +29,18 @@ Install the project dependencies using:
 
 ## Usage  
 
-Navigate into the src subdirectory and pass the dataset, feature selector and classifier arguments as follows to run your model:  
-```python main.py --dataset=DATASET --feature_selector=FEATURE_SELECTION_ALGO --classifier=CLASSIFICATION_ALGO```
+To perform Principle Component Analysis on a dataset to report optimal number of features for representation, run the following with the dataset argument:  
+```python PCA_Components.py --dataset=DATASET```  
+
+To run a model, navigate into the src subdirectory and pass the dataset, feature selector and classifier arguments as follows:   
+```python main.py --dataset=DATASET --feature_selector=FEATURE_SELECTION_ALGO --classifier=CLASSIFICATION_ALGO```  
 
 possible values of the arguments:  
 ```DATASET```: "UNSWNB15", "NSLKDD"  
 ```FEATURE_SELECTION_ALGO```: "AE","AEL1","AEL2","AEDropout","FSFC", "None"  
 ```CLASSIFICATION_ALGO```: "LadderNW", "LadderNWsup", "RandomForest", "NaiveBayes"  
 
-The training loss vs epochs, feature importances, chosen features, training and testing (overall and per class) accuracies will be reported. Predicted vs Actual classes on the testing set can be accessed at the /output/predictions.csv file after running the model.  
+The number of components vs dataset variance for PCA, training loss vs epochs, feature importances, chosen features, training and testing (overall and per class) accuracies will be reported. Predicted vs Actual classes on the testing set can be accessed at the /output/predictions.csv file after running the model.  
 
 
 
