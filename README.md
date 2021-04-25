@@ -1,25 +1,50 @@
-# Semi_Supervised_Model_for_Classification_of_Network_Intrusion_Malwares
+# Combined_Model_with_Reduced_Label_Dependency_for_Classification_of_Network_Intrusion_Malwares
 
-All source code files are available in the src folder  
-Associated plots are present in the Plots folder  
-The datasets including the benchmark NSL KDD dataset is present in the data folder  
+This repository contains the source code for the paper: A New Combined Model with Reduced Label Dependency for Malware Classification (Prishita Ray, Tanmayi Nandan, Lahari Anne, Kakelli Anil Kumar). 
+
+All code files are available under the ./src  
+Associated plots are present under ./Plots
+The datasets including the benchmark NSL KDD dataset are present in ./data
 
 UNSW Dataset Link: https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/  
-NSL-KDD19 Dataset Link: https://www.kaggle.com/hassan06/nslkdd#__sid=js0
+NSL-KDD19 Dataset Link: https://www.kaggle.com/hassan06/nslkdd#__sid=js0  
 
-Overview of steps involved:
-1. Datasets of Network Intrusion Malwares are preprocessed and values are normalized to improve model convergence
-2. Unsupervised Feature selection is performed using 4 variants of autoencoders and the FSFC algorithm to reduce overfitting (code can be accessed under src/autoencoder.py, src/autoencoder_l1.py, src/autoencoder_l2.py, src/autoencoder_dropout.py, src/fsfc.py)
+Note: This project is compatible with tensorflow v1.15  
 
-Link to research paper describing the FSFC algorithm:
-https://www.researchgate.net/publication/328108410_A_new_unsupervised_feature_selection_algorithm_using_similarity-based_feature_clustering
+## Installation  
 
-3. Data of selected features is passed through proposed semi-supervised ladder networks model, fully-supervised ladder networks model, Random Forest and Naive Bayes Algorithms for multi-class classification (code can be accessed under src/ladder_nw.py, src/ladder_nw_supervised.py, src/random_forest.py, src/naive_bayes.py)
+In order to support tensorflow v1.5, your local system should have a Python version <=3.5 installed, with the installation directory added to your PATH.  
 
-Link to research paper describing Ladder Networks:
-https://arxiv.org/pdf/1507.02672v2.pdf
+Clone the project repository by downloading the zip file or using:  
+```git clone https://github.com/PRISHIta123/Malware_Classification_using_ML```  
 
-4. Training and Testing accuracy is recorded for all combinations of the above feature selection algorithms and classification models to report the best combination on each dataset separately.
+Create a virtual environment to run the project using virtualenv (see this [link](https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/) for installing virtualenv).
+
+Open a command prompt/terminal, navigate to the folder containing the cloned repository and use these commanda to activate the virtual environment:  
+```
+virtualenv -p /path/to/Python3.5/python.exe env  
+``` 
+
+For Windows Users:   
+```
+\env\Scripts\Activate   
+```
+
+For Mac OS/Linux Users:  
+```
+source /env/Scripts/Activate  
+```
+
+Install the project dependencies using:  
+```
+pip install -r requirements.txt
+```
+## Usage  
+
+
+## Citation  
+If you find our work useful in your research, please cite: 
+
 
 
 
