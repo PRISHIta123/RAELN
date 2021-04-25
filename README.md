@@ -6,8 +6,8 @@ All code files are available under the ./src
 Associated plots are present under ./Plots  
 The datasets including the benchmark NSL KDD dataset are present in ./data
 
-UNSW Dataset Link: https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/  
-NSL-KDD19 Dataset Link: https://www.kaggle.com/hassan06/nslkdd#__sid=js0  
+UNSW-NB15 Dataset Link: https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/  
+NSL-KDD Dataset Link: https://www.kaggle.com/hassan06/nslkdd#__sid=js0  
 
 Note: This project is compatible with tensorflow v1.15  
 
