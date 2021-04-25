@@ -13,7 +13,7 @@ Note: This project is compatible with tensorflow v1.15
 
 ## Installation  
 
-In order to support tensorflow v1.5, your local system should have a Python version <=3.5 installed, with the installation directory added to your PATH.  
+In order to support tensorflow v1.15, your local system should have a Python version <=3.5 installed, with the installation directory added to your PATH.  
 
 Clone the project repository by downloading the zip file.  
 
