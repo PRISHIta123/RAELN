@@ -3,7 +3,7 @@
 This repository contains the source code for the paper: A New Combined Model with Reduced Label Dependency for Malware Classification  
 
 All code files are available under the ./src  
-Associated plots are present under ./Plots
+Associated plots are present under ./Plots  
 The datasets including the benchmark NSL KDD dataset are present in ./data
 
 UNSW Dataset Link: https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/  
