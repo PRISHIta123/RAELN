@@ -1,6 +1,6 @@
 # Combined_Model_with_Reduced_Label_Dependency_for_Classification_of_Network_Intrusion_Malwares
 
-This repository contains the source code for the paper: A New Combined Model with Reduced Label Dependency for Malware Classification (Prishita Ray, Tanmayi Nandan, Lahari Anne, Kakelli Anil Kumar). 
+This repository contains the source code for the paper: A New Combined Model with Reduced Label Dependency for Malware Classification  
 
 All code files are available under the ./src  
 Associated plots are present under ./Plots
@@ -15,8 +15,7 @@ Note: This project is compatible with tensorflow v1.15
 
 In order to support tensorflow v1.5, your local system should have a Python version <=3.5 installed, with the installation directory added to your PATH.  
 
-Clone the project repository by downloading the zip file or using:  
-```git clone https://github.com/PRISHIta123/Malware_Classification_using_ML```  
+Clone the project repository by downloading the zip file.  
 
 Create a virtual environment to run the project using virtualenv (see this [link](https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/) for installing virtualenv):  
 ```virtualenv -p /path/to/Python3.5/python.exe env ```  
@@ -30,9 +29,15 @@ Install the project dependencies using:
 
 ## Usage  
 
+Navigate into the src subdirectory and pass the dataset, feature selector and classifier arguments as follows to run your model: 
+```python main.py --dataset=DATASET --feature_selector=FEATURE_SELECTION_ALGO --classifier=CLASSIFICATION_ALGO```
 
-## Citation  
-If you find our work useful in your research, please cite: 
+possible values of the arguments:  
+```DATASET```: "UNSWNB15", "NSLKDD"  
+```FEATURE_SELECTION_ALGO```: "AE","AEL1","AEL2","AEDropout","FSFC", "None"
+```CLASSIFICATION_ALGO```: "LadderNW", "LadderNWsup", "RandomForest", "NaiveBayes"  
+
+The training loss vs epochs, feature importances, chosen features, training and testing (overall and per class) accuracies will be reported. Predicted vs Actual classes on the testing set can be accessed at the /output/predictions.csv file after running the model.  
 
 
 
