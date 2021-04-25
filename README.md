@@ -21,24 +21,17 @@ Clone the project repository by downloading the zip file or using:
 Create a virtual environment to run the project using virtualenv (see this [link](https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/) for installing virtualenv).
 
 Open a command prompt/terminal, navigate to the folder containing the cloned repository and use these commanda to activate the virtual environment:  
-```
-virtualenv -p /path/to/Python3.5/python.exe env  
-``` 
+```virtualenv -p /path/to/Python3.5/python.exe env ``` 
 
 For Windows Users:   
-```
-\env\Scripts\Activate   
-```
+```\env\Scripts\Activate```
 
 For Mac OS/Linux Users:  
-```
-source /env/Scripts/Activate  
-```
+```source /env/Scripts/Activate ```
 
 Install the project dependencies using:  
-```
-pip install -r requirements.txt
-```
+```pip install -r requirements.txt```
+
 ## Usage  
 
 
