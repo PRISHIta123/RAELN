@@ -29,7 +29,7 @@ Install the project dependencies using:
 
 ## Usage  
 
-To perform Principle Component Analysis on a dataset to report optimal number of features for representation, run the following with the dataset argument:  
+To perform Principle Component Analysis on a dataset to report optimal number of features for representation, navigate into the src subdirectory and run the following with the dataset argument:  
 ```python PCA_Components.py --dataset=DATASET```  
 
 To run a model, navigate into the src subdirectory and pass the dataset, feature selector and classifier arguments as follows:   
