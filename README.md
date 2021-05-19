@@ -16,7 +16,7 @@ Note: This project is compatible with tensorflow v1.15. The code will be upgrade
 In order to support tensorflow v1.15, your local system should have a Python version <=3.5 installed, with the installation directory added to your PATH.  
 
 Clone the project repository by downloading the zip file or by using:  
-```git clone ```  
+```git clone https://github.com/PRISHIta123/RAELN.git```  
 
 Open a command prompt/terminal and navigate to the folder containing the cloned repository.  
 
@@ -43,9 +43,8 @@ possible values of the arguments:
 ```FEATURE_SELECTION_ALGO```: "AE","AEL1","AEL2","AEDropout","FSFC", "None"  
 ```CLASSIFICATION_ALGO```: "LadderNW", "LadderNWsup", "RandomForest", "NaiveBayes"  
 
-The number of components vs dataset variance for PCA, training loss vs epochs, feature importances, chosen features, training and testing (overall and per class) accuracies will be reported. Predicted vs Actual classes on the testing set can be accessed at the /output/predictions.csv file after running the model.  
+The number of components vs dataset variance for PCA, training loss vs epochs for feature selection, feature importances, chosen features, training and testing (overall and per class) accuracies will be reported. Predicted vs Actual classes on the testing set can be accessed at the /output/predictions.csv file after running the model.  
 
-## Citation  
 
 
 
