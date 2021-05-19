@@ -9,13 +9,16 @@ The datasets including the benchmark NSL KDD dataset are present in ./data
 UNSW-NB15 Dataset Link: https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/  
 NSL-KDD Dataset Link: https://www.kaggle.com/hassan06/nslkdd#__sid=js0  
 
-Note: This project is compatible with tensorflow v1.15. The code will be upgraded to support the latest version of Tensorflow/Pytorch soon.   
+Note: This project is compatible with tensorflow v1.15. The code will be upgraded to support the latest version of Tensorflow/Pytorch.    
 
 ## Installation  
 
 In order to support tensorflow v1.15, your local system should have a Python version <=3.5 installed, with the installation directory added to your PATH.  
 
-Clone the project repository by downloading the zip file. Open a command prompt/terminal and navigate to the folder containing the cloned repository.  
+Clone the project repository by downloading the zip file or by using:  
+```git clone ```  
+
+Open a command prompt/terminal and navigate to the folder containing the cloned repository.  
 
 Create a virtual environment to run the project using virtualenv (see this [link](https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/) for installing virtualenv):  
 ```virtualenv -p /path/to/Python3.5/python.exe env ```  
