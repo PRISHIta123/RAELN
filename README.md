@@ -9,7 +9,7 @@ The datasets including the benchmark NSL KDD dataset are present in ./data
 UNSW-NB15 Dataset Link: https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/  
 NSL-KDD Dataset Link: https://www.kaggle.com/hassan06/nslkdd#__sid=js0  
 
-Note: This project is compatible with tensorflow v1.15. The code will be upgraded to support the latest version of Tensorflow/Pytorch.    
+Note: This project is currently compatible with tensorflow v1.15. The code will be upgraded to support the latest version of Tensorflow/Pytorch.    
 
 ## Installation  
 
