@@ -1,6 +1,6 @@
 # Combined_Model_with_Reduced_Label_Dependency_for_Classification_of_Network_Intrusion_Malwares
 
-This repository contains the source code for the paper: A New Combined Model with Reduced Label Dependency for Malware Classification  
+This repository contains the code implementation for the paper: A New Combined Model with Reduced Label Dependency for Malware Classification (Prishita Ray, Tanmayi Nandan, Lahari Anne, Kakelli Anil Kumar), accepted at the ICIIC Conference 2021.  
 
 All code files are available under the ./src  
 Associated plots are present under ./Plots  
@@ -9,7 +9,7 @@ The datasets including the benchmark NSL KDD dataset are present in ./data
 UNSW-NB15 Dataset Link: https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/  
 NSL-KDD Dataset Link: https://www.kaggle.com/hassan06/nslkdd#__sid=js0  
 
-Note: This project is compatible with tensorflow v1.15  
+Note: This project is compatible with tensorflow v1.15. The code will be upgraded to support the latest version of Tensorflow/Pytorch soon.   
 
 ## Installation  
 
@@ -41,6 +41,8 @@ possible values of the arguments:
 ```CLASSIFICATION_ALGO```: "LadderNW", "LadderNWsup", "RandomForest", "NaiveBayes"  
 
 The number of components vs dataset variance for PCA, training loss vs epochs, feature importances, chosen features, training and testing (overall and per class) accuracies will be reported. Predicted vs Actual classes on the testing set can be accessed at the /output/predictions.csv file after running the model.  
+
+## Citation  
 
 
 
