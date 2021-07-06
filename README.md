@@ -1,6 +1,8 @@
-# Combined_Model_with_Reduced_Label_Dependency_for_Classification_of_Network_Intrusion_Malwares
+# RAELN (L2-Regularized Autoencoder Enabled Ladder Networks Classifier)
 
 This repository contains the code implementation for the paper: A New Combined Model with Reduced Label Dependency for Malware Classification (Prishita Ray, Tanmayi Nandan, Lahari Anne, Kakelli Anil Kumar), accepted at the ICIIC Conference 2021.  
+
+**Abstract:** With the technological advancements in recent times, security threats caused by malware are increasing with no bounds. The first step performed by security analysts for the detection and mitigation of malware is its classification. This paper aims to classify network intrusion malware using new-age machine learning techniques with reduced label dependency and identifies the most effective combination of feature selection and classification technique for this purpose. The proposed model, L2 Regularized Autoencoder Enabled Ladder Networks Classifier (RAELN-Classifier), is developed based on a combinatory analysis of various feature selection techniques like FSFC, variants of autoencoders and semi-supervised classification techniques such as ladder networks. The model is trained and tested over UNSW-NB15 and benchmark NSL-KDD datasets for accurate real time model performance evaluation using overall accuracy as well as per-class accuracy and was found to result in higher accuracy compared to similar baseline and state-of-the-art models.  
 
 All code files are available under the ./src  
 Associated plots are present under ./Plots  
