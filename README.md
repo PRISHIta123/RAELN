@@ -23,7 +23,7 @@ Clone the project repository by downloading the zip file or by using:
 Open a command prompt/terminal and navigate to the folder containing the cloned repository.  
 
 Create a virtual environment to run the project using virtualenv (see this [link](https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/) for installing virtualenv):  
-```virtualenv -p /path/to/Python3.5/python.exe env ```  
+```virtualenv -p /path/to/Python3.7/python.exe env ```  
 
 Use these commands to activate the virtual environment.  
 For Windows Users: ```\env\Scripts\Activate```  
