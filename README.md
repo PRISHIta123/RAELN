@@ -15,7 +15,7 @@ Note: This project is currently compatible with tensorflow v1.15. The code will 
 
 ## Installation  
 
-In order to support tensorflow v1.15, your local system should have a Python version <=3.5 installed, with the installation directory added to your PATH.  
+In order to support tensorflow v1.15, your local system should have a Python version <=3.7 installed, with the installation directory added to your PATH.  
 
 Clone the project repository by downloading the zip file or by using:  
 ```git clone https://github.com/PRISHIta123/RAELN.git```  
