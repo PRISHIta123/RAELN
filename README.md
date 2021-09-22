@@ -20,7 +20,7 @@ In order to support tensorflow v1.15, your local system should have a Python ver
 Clone the project repository by downloading the zip file or by using:  
 ```git clone https://github.com/PRISHIta123/RAELN.git```  
 
-Open a command prompt/terminal and navigate to the folder containing the cloned repository.  
+Open a command prompt/terminal and navigate to the folder containing the cloned repository followed by src/tf-v15.0.  
 
 Create a virtual environment to run the project using virtualenv (see this [link](https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/) for installing virtualenv):  
 ```virtualenv -p /path/to/Python3.7/python.exe env ```  
