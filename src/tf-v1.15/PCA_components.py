@@ -16,10 +16,10 @@ v=vars(args)
 dataset= v["dataset"]
 
 if dataset=="UNSWNB15":
-	training_df=pd.read_csv("..//data//UNSW_datasets//UNSW_NB15_training-set.csv")
+	training_df=pd.read_csv("../../data//UNSW_datasets//UNSW_NB15_training-set.csv")
 
 elif dataset=="NSLKDD":
-	training_df=pd.read_csv("..//data//NSL_KDD_datasets//NSL_KDDTrain+.csv",header=None)
+	training_df=pd.read_csv("../../data//NSL_KDD_datasets//NSL_KDDTrain+.csv",header=None)
 
 training_df= training_df.dropna()
 

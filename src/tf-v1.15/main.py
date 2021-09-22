@@ -13,7 +13,6 @@ import autoencoder as ae
 import fsfc as fs
 import ladder_nw as ladder
 import ladder_nw_supervised as ladder_sp
-import mcssb as mcssb
 import random_forest as rf
 import naive_bayes as nb
 
@@ -40,8 +39,8 @@ class_algo=v["classifier"]
 
 if dataset=="UNSWNB15":
 
-	training_df=pd.read_csv("..//data//UNSW_datasets//UNSW_NB15_training-set.csv")
-	testing_df=pd.read_csv("..//data//UNSW_datasets//UNSW_NB15_testing-set.csv")
+	training_df=pd.read_csv("../../data//UNSW_datasets//UNSW_NB15_training-set.csv")
+	testing_df=pd.read_csv("../../data//UNSW_datasets//UNSW_NB15_testing-set.csv")
 
 	training_df= training_df.dropna()
 	testing_df= testing_df.dropna()
@@ -89,8 +88,8 @@ if dataset=="UNSWNB15":
 	#l=len(sf)
 
 	#choosing top l feature values from datasets to train classifier
-	training_df = training_df.ix[:,sf]
-	testing_df = testing_df.ix[:,sf]
+	training_df = training_df.iloc[:,sf]
+	testing_df = testing_df.iloc[:,sf]
 
 	training_data = np.array(training_df)
 	testing_data = np.array(testing_df)
@@ -153,7 +152,7 @@ if dataset=="UNSWNB15":
 	for i in range(0,len(preds)):
 		pred_labels.append(mapping[int(preds[i])])
 
-	with open('../output/predictions.csv', 'w', newline='') as file:
+	with open('../../output/predictions.csv', 'w', newline='') as file:
 		writer = csv.writer(file)
 		writer.writerow(["SN", "Actual Class", "Predicted Class"])
 
@@ -162,8 +161,8 @@ if dataset=="UNSWNB15":
 
 elif dataset=="NSLKDD":
 
-	training_df=pd.read_csv("..//data//NSL_KDD_datasets//NSL_KDDTrain+.csv",header=None)
-	testing_df=pd.read_csv("..//data//NSL_KDD_datasets//NSL_KDDTest+.csv",header=None)
+	training_df=pd.read_csv("../../data//NSL_KDD_datasets//NSL_KDDTrain+.csv",header=None)
+	testing_df=pd.read_csv("../../data//NSL_KDD_datasets//NSL_KDDTest+.csv",header=None)
 
 	training_df= training_df.dropna()
 	testing_df= testing_df.dropna()
@@ -211,8 +210,8 @@ elif dataset=="NSLKDD":
 	#l=len(sf)
 
 	#choosing top l feature values from datasets to train classifier
-	training_df = training_df.ix[:,sf]
-	testing_df = testing_df.ix[:,sf]
+	training_df = training_df.iloc[:,sf]
+	testing_df = testing_df.iloc[:,sf]
 
 	training_data = np.array(training_df)
 	testing_data = np.array(testing_df)
@@ -275,7 +274,7 @@ elif dataset=="NSLKDD":
 	for i in range(0,len(preds)):
 		pred_labels.append(mapping[int(preds[i])])
 
-	with open('../output/predictions.csv', 'w', newline='') as file:
+	with open('../../output/predictions.csv', 'w', newline='') as file:
 		writer = csv.writer(file)
 		writer.writerow(["SN", "Actual Class", "Predicted Class"])
 
