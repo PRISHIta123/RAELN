@@ -111,15 +111,15 @@ class Ladder:
         gamma=[]
    
         for l in range(self.L):
-             w=tf.Variable(tf.random_normal((self.layer_sizes[l],self.layer_sizes[l+1]), seed=0))/ math.sqrt(self.layer_sizes[l])
-             W.append(w)
-             v=tf.Variable(tf.random_normal((self.layer_sizes[l+1],self.layer_sizes[l]), seed=0))/ math.sqrt(self.layer_sizes[l+1])
-             V.append(v)
+            w=tf.Variable(tf.random_normal((self.layer_sizes[l],self.layer_sizes[l+1]), seed=0))/ math.sqrt(self.layer_sizes[l])
+            W.append(w)
+            v=tf.Variable(tf.random_normal((self.layer_sizes[l+1],self.layer_sizes[l]), seed=0))/ math.sqrt(self.layer_sizes[l+1])
+            V.append(v)
 
 
         for l in range(self.L):
-             beta.append(tf.Variable(0.0 * tf.ones([self.layer_sizes[l+1]])))
-             gamma.append(tf.Variable(1.0 * tf.ones([self.layer_sizes[l+1]])))
+            beta.append(tf.Variable(0.0 * tf.ones([self.layer_sizes[l+1]])))
+            gamma.append(tf.Variable(1.0 * tf.ones([self.layer_sizes[l+1]])))
 
         noise_std=0.1
 
