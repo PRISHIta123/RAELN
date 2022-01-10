@@ -1,6 +1,0 @@
-matplotlib
-pandas
-numpy
-sklearn
-tensorflow-gpu==1.15
-
