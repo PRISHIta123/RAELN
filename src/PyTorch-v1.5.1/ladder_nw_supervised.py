@@ -227,7 +227,7 @@ def get_test_data(test_data, tlabels, num_samples):
 
 def training(training_data, labels, testing_data, t_labels, lr, actf1, actf2, layer_sizes, num_samples, num_classes, batch_size=1000):
     
-    num_epoch = 1
+    num_epoch = 150
     noise_std = 0.1
     seed = torch.manual_seed(0)
     num_batches = len(training_data)//batch_size
