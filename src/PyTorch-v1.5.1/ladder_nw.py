@@ -222,8 +222,8 @@ def get_data(training_data, labels, num_labeled, num_samples, batch_size):
 
     dataset_unlabeled = torch.utils.data.TensorDataset(tensor_x_ul)
     
-    train_dataloader_labelled = DataLoader(dataset, batch_size=batch_size)
-    train_dataloader_unlabelled = DataLoader(dataset_unlabeled, batch_size=batch_size)
+    train_dataloader_labelled = DataLoader(dataset, batch_size=100)
+    train_dataloader_unlabelled = DataLoader(dataset_unlabeled, batch_size=900)
 
     return train_dataloader_labelled, train_dataloader_unlabelled
 
